@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var ziBaiStatusText: TextView
     private lateinit var gua64Text: TextView
     private lateinit var gua64XiangText: TextView
+    private lateinit var shenShaText: TextView
+    private lateinit var shenShaStatusText: TextView
+    private lateinit var baShaText: TextView
+    private lateinit var baShaStatusText: TextView
     private lateinit var siZhuText: TextView
     private lateinit var locationText: TextView
 
@@ -245,6 +249,32 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "巽为风", "兑为泽", "风水涣", "水泽节", "风泽中孚", "雷山小过", "水火既济", "火水未济"
     )
 
+    // 神煞名称
+    private val shenShaNames = arrayOf(
+        "太岁", "劫煞", "灾煞", "岁煞", "伏兵", "大祸",
+        "天煞", "地煞", "年煞", "月煞", "日煞", "时煞",
+        "三煞", "五黄", "二黑", "七赤", "九紫", "一白",
+        "四绿", "六白", "八白", "三碧", "太岁", "劫煞"
+    )
+
+    // 神煞吉凶
+    private val shenShaJiXiong = arrayOf(
+        "凶", "凶", "凶", "凶", "凶", "凶",
+        "凶", "凶", "凶", "凶", "凶", "凶",
+        "大凶", "大凶", "凶", "凶", "吉", "吉",
+        "吉", "吉", "吉", "凶", "凶", "凶"
+    )
+
+    // 八煞黄泉
+    private val baSha = arrayOf(
+        "坎龙", "坤兔", "震猴", "巽鸡", "乾马", "兑蛇", "艮虎", "离猪"
+    )
+
+    // 八煞吉凶
+    private val baShaJiXiong = arrayOf(
+        "煞", "煞", "煞", "煞", "煞", "煞", "煞", "煞"
+    )
+
     // 天干
     private val tianGan = arrayOf("甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸")
 
@@ -282,6 +312,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         ziBaiStatusText = findViewById(R.id.ziBaiStatusText)
         gua64Text = findViewById(R.id.gua64Text)
         gua64XiangText = findViewById(R.id.gua64XiangText)
+        shenShaText = findViewById(R.id.shenShaText)
+        shenShaStatusText = findViewById(R.id.shenShaStatusText)
+        baShaText = findViewById(R.id.baShaText)
+        baShaStatusText = findViewById(R.id.baShaStatusText)
         siZhuText = findViewById(R.id.siZhuText)
         locationText = findViewById(R.id.locationText)
 
@@ -521,6 +555,35 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         gua64XiangText.text = guaXiangName
         gua64Text.setTextColor(android.graphics.Color.parseColor("#87CEEB"))
         gua64XiangText.setTextColor(android.graphics.Color.parseColor("#87CEEB"))
+
+        // 神煞 (每山15度)
+        val shenShaIndex = ((degree + 7.5f) / 15f).toInt() % 24
+        val shenShaName = shenShaNames[shenShaIndex]
+        val shenShaJX = shenShaJiXiong[shenShaIndex]
+        shenShaText.text = "神煞: $shenShaName"
+        shenShaStatusText.text = shenShaJX
+        when (shenShaJX) {
+            "吉" -> {
+                shenShaText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+                shenShaStatusText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+            }
+            "大凶" -> {
+                shenShaText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+                shenShaStatusText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+            }
+            else -> {
+                shenShaText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+                shenShaStatusText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+            }
+        }
+
+        // 八煞黄泉 (每煞45度)
+        val baShaIndex = ((degree + 22.5f) / 45f).toInt() % 8
+        val baShaName = baSha[baShaIndex]
+        baShaText.text = "八煞: $baShaName"
+        baShaStatusText.text = "煞"
+        baShaText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+        baShaStatusText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
 
         // 四柱干支
         val siZhu = calculateSiZhu()

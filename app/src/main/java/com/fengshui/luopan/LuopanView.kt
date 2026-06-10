@@ -244,6 +244,39 @@ class LuopanView @JvmOverloads constructor(
         return index == 0 || index == 2 || index == 3 || index == 4
     }
 
+    // 神煞名称（每山对应的神煞）
+    // 24山 x 主要神煞
+    private val shenShaNames = arrayOf(
+        "太岁", "劫煞", "灾煞", "岁煞", "伏兵", "大祸",
+        "天煞", "地煞", "年煞", "月煞", "日煞", "时煞",
+        "三煞", "五黄", "二黑", "七赤", "九紫", "一白",
+        "四绿", "六白", "八白", "三碧", "太岁", "劫煞"
+    )
+
+    // 神煞吉凶
+    private val shenShaJiXiong = arrayOf(
+        "凶", "凶", "凶", "凶", "凶", "凶",
+        "凶", "凶", "凶", "凶", "凶", "凶",
+        "大凶", "大凶", "凶", "凶", "吉", "吉",
+        "吉", "吉", "吉", "凶", "凶", "凶"
+    )
+
+    // 八煞黄泉（坐山克向水）
+    // 八煞：坎龙、坤兔、震山猴、巽鸡、乾马、兑蛇头、艮虎、离猪为煞曜
+    private val baSha = arrayOf(
+        "坎龙", "坤兔", "震猴", "巽鸡", "乾马", "兑蛇", "艮虎", "离猪"
+    )
+
+    // 八煞对应方位（度数）
+    private val baShaDegrees = floatArrayOf(
+        0f, 45f, 90f, 135f, 180f, 225f, 270f, 315f
+    )
+
+    // 八煞吉凶（均为凶）
+    private val baShaJiXiong = arrayOf(
+        "煞", "煞", "煞", "煞", "煞", "煞", "煞", "煞"
+    )
+
     // 当前角度
     var currentDegree: Float = 0f
         set(value) {
@@ -307,14 +340,20 @@ class LuopanView @JvmOverloads constructor(
         // 绘制最外圈周天360度刻度
         drawZhouTianScale(canvas)
 
+        // 绘制神煞（最外圈）
+        drawShenSha(canvas, radius * 0.98f, radius * 0.95f)
+
+        // 绘制八煞黄泉
+        drawBaSha(canvas, radius * 0.94f, radius * 0.90f)
+
         // 绘制天盘 (最外圈24山)
-        draw24ShanRing(canvas, tianPan24, radius * 0.95f, radius * 0.82f, 0f, true)
+        draw24ShanRing(canvas, tianPan24, radius * 0.89f, radius * 0.78f, 0f, true)
 
         // 绘制地盘 (中圈24山)
-        draw24ShanRing(canvas, diPan24, radius * 0.80f, radius * 0.67f, 7.5f, true)
+        draw24ShanRing(canvas, diPan24, radius * 0.76f, radius * 0.65f, 7.5f, true)
 
         // 绘制人盘 (内圈24山，中针)
-        draw24ShanRing(canvas, renPan24, radius * 0.65f, radius * 0.52f, 15f, true)
+        draw24ShanRing(canvas, renPan24, radius * 0.63f, radius * 0.52f, 15f, true)
 
         // 绘制一百二十分金
         drawFenJin120(canvas, radius * 0.50f, radius * 0.40f)
@@ -902,6 +941,94 @@ class LuopanView @JvmOverloads constructor(
 
         paint.strokeWidth = 2f
         paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制神煞
+     * 每山15度，共24山
+     */
+    private fun drawShenSha(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 24f
+
+        for (i in 0 until 24) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 0.5f
+            paint.color = Color.parseColor("#5D4037")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.25f
+
+            // 根据吉凶显示颜色
+            textPaint.color = when (shenShaJiXiong[i]) {
+                "吉" -> Color.parseColor("#90EE90")
+                "大凶" -> Color.parseColor("#FF0000")
+                else -> Color.parseColor("#DAA520")
+            }
+            textPaint.typeface = Typeface.DEFAULT_BOLD
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            canvas.drawText(shenShaNames[i], 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制八煞黄泉
+     * 八煞方位，每煞45度
+     */
+    private fun drawBaSha(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 8f  // 每煞45度
+
+        for (i in 0 until 8) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 1f
+            paint.color = Color.parseColor("#CC0000")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.3f
+            textPaint.color = Color.parseColor("#FF0000")
+            textPaint.typeface = Typeface.DEFAULT_BOLD
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            canvas.drawText(baSha[i], 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FF0000")
         canvas.drawCircle(0f, 0f, outerR, paint)
         canvas.drawCircle(0f, 0f, innerR, paint)
     }

@@ -390,6 +390,72 @@
 
     </LinearLayout>
 
+    <!-- 神煞 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/shenShaText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="神煞: 太岁"
+            android:textColor="#DAA520"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/shenShaStatusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="凶"
+            android:textColor="#DAA520"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 八煞黄泉 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/baShaText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="八煞: 坎龙"
+            android:textColor="#FF0000"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/baShaStatusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="煞"
+            android:textColor="#FF0000"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
     <!-- 四柱干支 -->
     <TextView
         android:id="@+id/siZhuText"
