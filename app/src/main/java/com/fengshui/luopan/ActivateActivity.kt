@@ -128,7 +128,7 @@ class ActivateActivity : AppCompatActivity() {
         if (licenseManager.getRemainingTrials() > 0 || licenseManager.isActivated()) {
             super.onBackPressed()
         } else {
-            Toast.makeText(this, "请先激活或试用应用", Toast.makeText_SHORT).show()
+            Toast.makeText(this, "请先激活或试用应用", Toast.LENGTH_SHORT).show()
         }
     }
 
