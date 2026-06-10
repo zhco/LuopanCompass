@@ -3,10 +3,13 @@ package com.fengshui.luopan
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.min
+import kotlin.math.sqrt
 
 /**
  * 风水罗盘自定义绘制视图
@@ -284,6 +287,20 @@ class LuopanView @JvmOverloads constructor(
             invalidate()
         }
 
+    // 缩放和拖动
+    private var scale = 1f
+    private var translateX = 0f
+    private var translateY = 0f
+    private var lastTouchX = 0f
+    private var lastTouchY = 0f
+    private var lastDistance = 0f
+    private var isDragging = false
+    private val MIN_SCALE = 1f
+    private val MAX_SCALE = 5f
+
+    // 手势检测器（双击恢复）
+    private lateinit var gestureDetector: GestureDetector
+
     // 画笔
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -302,6 +319,17 @@ class LuopanView @JvmOverloads constructor(
         paint.style = Paint.Style.STROKE
         paint.color = Color.parseColor("#B8860B")
         paint.strokeWidth = 1.5f
+
+        // 初始化手势检测器，双击恢复原始大小
+        gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                scale = 1f
+                translateX = 0f
+                translateY = 0f
+                invalidate()
+                return true
+            }
+        })
 
         goldPaint.color = Color.parseColor("#FFD700")
         goldPaint.textAlign = Paint.Align.CENTER
@@ -332,7 +360,10 @@ class LuopanView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.save()
-        canvas.translate(centerX, centerY)
+
+        // 应用缩放和平移
+        canvas.translate(centerX + translateX, centerY + translateY)
+        canvas.scale(scale, scale)
 
         // 绘制背景圆盘
         drawBackground(canvas)
@@ -1089,5 +1120,70 @@ class LuopanView @JvmOverloads constructor(
 
         centerPaint.color = Color.parseColor("#FFD700")
         canvas.drawCircle(0f, 0f, 4f, centerPaint)
+    }
+
+    // 触摸事件处理：双指缩放 + 单指拖动 + 双击恢复
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        // 先让手势检测器处理双击
+        gestureDetector.onTouchEvent(event)
+
+        when (event.action and MotionEvent.ACTION_MASK) {
+            MotionEvent.ACTION_DOWN -> {
+                lastTouchX = event.x
+                lastTouchY = event.y
+                isDragging = true
+                parent.requestDisallowInterceptTouchEvent(true)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (event.pointerCount == 1 && isDragging) {
+                    // 单指拖动
+                    val dx = event.x - lastTouchX
+                    val dy = event.y - lastTouchY
+                    translateX += dx
+                    translateY += dy
+                    lastTouchX = event.x
+                    lastTouchY = event.y
+                    invalidate()
+                } else if (event.pointerCount == 2) {
+                    // 双指缩放
+                    isDragging = false
+                    val x1 = event.getX(0)
+                    val y1 = event.getY(0)
+                    val x2 = event.getX(1)
+                    val y2 = event.getY(1)
+                    val distance = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)).toFloat()
+
+                    if (lastDistance > 0) {
+                        val scaleFactor = distance / lastDistance
+                        val newScale = scale * scaleFactor
+                        if (newScale in MIN_SCALE..MAX_SCALE) {
+                            // 以双指中心为缩放中心
+                            val midX = (x1 + x2) / 2f
+                            val midY = (y1 + y2) / 2f
+                            val cx = centerX + translateX
+                            val cy = centerY + translateY
+
+                            translateX = midX - (midX - translateX) * scaleFactor
+                            translateY = midY - (midY - translateY) * scaleFactor
+
+                            scale = newScale
+                            invalidate()
+                        }
+                    }
+                    lastDistance = distance
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                isDragging = false
+                lastDistance = 0f
+                parent.requestDisallowInterceptTouchEvent(false)
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                isDragging = false
+                lastDistance = 0f
+                parent.requestDisallowInterceptTouchEvent(false)
+            }
+        }
+        return true
     }
 }
