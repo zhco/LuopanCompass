@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">风水罗盘</string>
-    <string name="degree_format">%.1f°</string>
-    <string name="location_format">经度: %.4f  纬度: %.4f</string>
+    <string name="degree_format" formatted="false">%.1f°</string>
+    <string name="location_format" formatted="false">经度: %.4f  纬度: %.4f</string>
     <string name="no_sensor">此设备不支持罗盘功能</string>
     <string name="calibrate_hint">请将手机画8字校准传感器</string>
-    <string name="mountain_water">山:%s 水:%s</string>
+    <string name="mountain_water" formatted="false">山:%s 水:%s</string>
 </resources>
