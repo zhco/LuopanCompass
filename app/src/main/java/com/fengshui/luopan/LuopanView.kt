@@ -10,7 +10,7 @@ import kotlin.math.min
 
 /**
  * 风水罗盘自定义绘制视图
- * 包含：天池、八卦、透地六十龙、穿山七十二龙、一百二十分金、地盘24山、人盘24山、天盘24山、周天刻度
+ * 包含：天池、八卦、十二长生、二十八宿、透地六十龙、穿山七十二龙、一百二十分金、地盘24山、人盘24山、天盘24山、周天刻度
  */
 class LuopanView @JvmOverloads constructor(
     context: Context,
@@ -26,7 +26,7 @@ class LuopanView @JvmOverloads constructor(
         "庚", "酉", "辛", "戌", "乾", "亥"
     )
 
-    // 地盘二十四山 (中圈，正针，与天盘偏移7.5度)
+    // 地盘二十四山 (中圈，正针)
     private val diPan24 = arrayOf(
         "子", "癸", "丑", "艮", "寅", "甲",
         "卯", "乙", "辰", "巽", "巳", "丙",
@@ -34,7 +34,7 @@ class LuopanView @JvmOverloads constructor(
         "酉", "辛", "戌", "乾", "亥", "壬"
     )
 
-    // 人盘二十四山 (内圈，中针，与地盘偏移7.5度，用于消砂纳水)
+    // 人盘二十四山 (内圈，中针)
     private val renPan24 = arrayOf(
         "子", "癸", "丑", "艮", "寅", "甲",
         "卯", "乙", "辰", "巽", "巳", "丙",
@@ -74,112 +74,93 @@ class LuopanView @JvmOverloads constructor(
     )
 
     // 穿山七十二龙
-    // 六十甲子配七十二龙，每龙5度（360/72=5）
-    // 分布在二十四山之下，每山3龙
-    // 其中有12个空亡龙（大空亡）
     private val chuanShan72 = arrayOf(
-        // 壬山 (3龙)
         "甲子", "丙子", "戊子",
-        // 子山 (3龙)
         "庚子", "壬子", "空亡",
-        // 癸山 (3龙)
         "乙丑", "丁丑", "己丑",
-        // 丑山 (3龙)
         "辛丑", "癸丑", "空亡",
-        // 艮山 (3龙)
         "丙寅", "戊寅", "庚寅",
-        // 寅山 (3龙)
         "壬寅", "甲寅", "空亡",
-        // 甲山 (3龙)
         "丁卯", "己卯", "辛卯",
-        // 卯山 (3龙)
         "癸卯", "乙卯", "空亡",
-        // 乙山 (3龙)
         "戊辰", "庚辰", "壬辰",
-        // 辰山 (3龙)
         "甲辰", "丙辰", "空亡",
-        // 巽山 (3龙)
         "己巳", "辛巳", "癸巳",
-        // 巳山 (3龙)
         "乙巳", "丁巳", "空亡",
-        // 丙山 (3龙)
         "庚午", "壬午", "甲午",
-        // 午山 (3龙)
         "丙午", "戊午", "空亡",
-        // 丁山 (3龙)
         "辛未", "癸未", "乙未",
-        // 未山 (3龙)
         "丁未", "己未", "空亡",
-        // 坤山 (3龙)
         "壬申", "甲申", "丙申",
-        // 申山 (3龙)
         "戊申", "庚申", "空亡",
-        // 庚山 (3龙)
         "癸酉", "乙酉", "丁酉",
-        // 酉山 (3龙)
         "己酉", "辛酉", "空亡",
-        // 辛山 (3龙)
         "甲戌", "丙戌", "戊戌",
-        // 戌山 (3龙)
         "庚戌", "壬戌", "空亡",
-        // 乾山 (3龙)
         "乙亥", "丁亥", "己亥",
-        // 亥山 (3龙)
         "辛亥", "癸亥", "空亡"
     )
 
     // 透地六十龙
-    // 六十甲子配六十龙，每龙6度（360/60=6）
-    // 分布在二十四山之下，每山2-3龙
     private val touDi60 = arrayOf(
-        // 壬山 (2龙)
         "甲子", "丙子",
-        // 子山 (3龙)
         "戊子", "庚子", "壬子",
-        // 癸山 (2龙)
         "乙丑", "丁丑",
-        // 丑山 (3龙)
         "己丑", "辛丑", "癸丑",
-        // 艮山 (2龙)
         "丙寅", "戊寅",
-        // 寅山 (3龙)
         "庚寅", "壬寅", "甲寅",
-        // 甲山 (2龙)
         "丁卯", "己卯",
-        // 卯山 (3龙)
         "辛卯", "癸卯", "乙卯",
-        // 乙山 (2龙)
         "戊辰", "庚辰",
-        // 辰山 (3龙)
         "壬辰", "甲辰", "丙辰",
-        // 巽山 (2龙)
         "己巳", "辛巳",
-        // 巳山 (3龙)
         "癸巳", "乙巳", "丁巳",
-        // 丙山 (2龙)
         "庚午", "壬午",
-        // 午山 (3龙)
         "甲午", "丙午", "戊午",
-        // 丁山 (2龙)
         "辛未", "癸未",
-        // 未山 (3龙)
         "乙未", "丁未", "己未",
-        // 坤山 (2龙)
         "壬申", "甲申",
-        // 申山 (3龙)
         "丙申", "戊申", "庚申",
-        // 庚山 (2龙)
         "癸酉", "乙酉",
-        // 酉山 (3龙)
         "丁酉", "己酉", "辛酉",
-        // 辛山 (2龙)
         "甲戌", "丙戌",
-        // 戌山 (3龙)
         "戊戌", "庚戌", "壬戌",
-        // 乾山 (2龙)
         "乙亥", "丁亥",
-        // 亥山 (3龙)
         "己亥", "辛亥", "癸亥"
+    )
+
+    // 十二长生宫
+    // 以十二地支为基础，每宫30度
+    // 顺序：长生、沐浴、冠带、临官、帝旺、衰、病、死、墓、绝、胎、养
+    private val changSheng12 = arrayOf(
+        "长生", "沐浴", "冠带", "临官", "帝旺", "衰",
+        "病", "死", "墓", "绝", "胎", "养"
+    )
+
+    // 十二长生宫对应的地支（以火局丙丁为例，从寅开始长生）
+    // 实际应根据坐山五行局来定，这里做简化展示
+    // 金局长生从巳起，木局长生从亥起，水局长生从申起，火局长生从寅起
+    private val changShengZhi = arrayOf("寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑")
+
+    // 二十八宿
+    // 东方青龙七宿：角亢氐房心尾箕
+    // 北方玄武七宿：斗牛女虚危室壁
+    // 西方白虎七宿：奎娄胃昴毕觜参
+    // 南方朱雀七宿：井鬼柳星张翼轸
+    // 每宿约12.857度（360/28）
+    private val xiu28 = arrayOf(
+        "角", "亢", "氐", "房", "心", "尾", "箕",
+        "斗", "牛", "女", "虚", "危", "室", "壁",
+        "奎", "娄", "胃", "昴", "毕", "觜", "参",
+        "井", "鬼", "柳", "星", "张", "翼", "轸"
+    )
+
+    // 二十八宿度数分配（每宿度数不同，总计360度）
+    private val xiu28Degrees = floatArrayOf(
+        12.5f, 10.0f, 15.0f, 5.0f, 5.0f, 18.0f, 11.0f,
+        26.0f, 8.0f, 12.0f, 10.0f, 17.0f, 16.0f, 9.0f,
+        16.0f, 12.0f, 14.0f, 11.0f, 16.0f, 2.0f, 9.0f,
+        33.0f, 3.0f, 15.0f, 7.0f, 18.0f, 18.0f, 17.0f
     )
 
     // 一百二十分金吉凶判断
@@ -189,19 +170,22 @@ class LuopanView @JvmOverloads constructor(
     }
 
     // 穿山七十二龙吉凶判断
-    // 空亡为凶，其他根据纳音五行判断
     private fun isChuanShanGood(index: Int): Boolean {
         return chuanShan72[index] != "空亡"
     }
 
     // 透地六十龙吉凶判断
-    // 根据纳音五行与坐山五行生克判断
-    // 简化：甲子、丙子、戊子、庚子、壬子 等阳干为吉
     private fun isTouDiGood(index: Int): Boolean {
         val name = touDi60[index]
         val gan = name[0]
-        // 阳干为吉：甲丙戊庚壬
         return gan in listOf('甲', '丙', '戊', '庚', '壬')
+    }
+
+    // 十二长生宫吉凶判断
+    // 长生、冠带、临官、帝旺为吉
+    // 沐浴、衰、病、死、墓、绝、胎、养为凶或平
+    private fun isChangShengGood(index: Int): Boolean {
+        return index == 0 || index == 2 || index == 3 || index == 4
     }
 
     // 当前角度
@@ -285,8 +269,11 @@ class LuopanView @JvmOverloads constructor(
         // 绘制透地六十龙
         drawTouDi60(canvas, radius * 0.26f, radius * 0.18f)
 
-        // 绘制八卦圈
-        drawBaGuaRing(canvas, radius * 0.16f, radius * 0.10f)
+        // 绘制十二长生宫
+        drawChangSheng12(canvas, radius * 0.16f, radius * 0.10f)
+
+        // 绘制二十八宿
+        draw28Xiu(canvas, radius * 0.08f, radius * 0.04f)
 
         // 绘制天池 (中心)
         drawTianChi(canvas)
@@ -483,11 +470,9 @@ class LuopanView @JvmOverloads constructor(
 
     /**
      * 绘制穿山七十二龙
-     * 每龙5度，共72龙
-     * 空亡龙用红色标注
      */
     private fun drawChuanShan72(canvas: Canvas, outerR: Float, innerR: Float) {
-        val step = 360f / 72f  // 每龙5度
+        val step = 360f / 72f
 
         for (i in 0 until 72) {
             val startAngle = i * step - currentDegree - step / 2
@@ -500,7 +485,6 @@ class LuopanView @JvmOverloads constructor(
                 (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
             )
 
-            // 每山分隔（每3龙一山）
             if (i % 3 == 0) {
                 paint.strokeWidth = 1f
                 paint.color = Color.parseColor("#B8860B")
@@ -520,20 +504,19 @@ class LuopanView @JvmOverloads constructor(
 
             val name = chuanShan72[i]
             if (name == "空亡") {
-                textPaint.color = Color.parseColor("#FF0000")  // 空亡 - 红色
+                textPaint.color = Color.parseColor("#FF0000")
                 textPaint.typeface = Typeface.DEFAULT_BOLD
             } else if (isChuanShanGood(i)) {
-                textPaint.color = Color.parseColor("#90EE90")  // 吉 - 绿色
+                textPaint.color = Color.parseColor("#90EE90")
                 textPaint.typeface = Typeface.DEFAULT
             } else {
-                textPaint.color = Color.parseColor("#FF6B6B")  // 凶 - 浅红
+                textPaint.color = Color.parseColor("#FF6B6B")
                 textPaint.typeface = Typeface.DEFAULT
             }
 
             canvas.save()
             canvas.translate(x, y)
             canvas.rotate((startAngle + step / 2 + 90).toFloat())
-            // 只显示天干部分，避免拥挤
             val displayText = if (name == "空亡") "空" else name.substring(0, 1)
             canvas.drawText(displayText, 0f, 0f, textPaint)
             canvas.restore()
@@ -547,10 +530,9 @@ class LuopanView @JvmOverloads constructor(
 
     /**
      * 绘制透地六十龙
-     * 每龙6度，共60龙
      */
     private fun drawTouDi60(canvas: Canvas, outerR: Float, innerR: Float) {
-        val step = 360f / 60f  // 每龙6度
+        val step = 360f / 60f
 
         for (i in 0 until 60) {
             val startAngle = i * step - currentDegree - step / 2
@@ -563,7 +545,6 @@ class LuopanView @JvmOverloads constructor(
                 (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
             )
 
-            // 每山分隔
             if (i % 3 == 0 || i % 2 == 0) {
                 paint.strokeWidth = 1f
                 paint.color = Color.parseColor("#B8860B")
@@ -592,7 +573,6 @@ class LuopanView @JvmOverloads constructor(
             canvas.save()
             canvas.translate(x, y)
             canvas.rotate((startAngle + step / 2 + 90).toFloat())
-            // 只显示天干部分
             val displayText = touDi60[i].substring(0, 1)
             canvas.drawText(displayText, 0f, 0f, textPaint)
             canvas.restore()
@@ -604,26 +584,15 @@ class LuopanView @JvmOverloads constructor(
         canvas.drawCircle(0f, 0f, innerR, paint)
     }
 
-    private fun drawBaGuaRing(canvas: Canvas, outerR: Float, innerR: Float) {
-        val step = 360f / 8f
+    /**
+     * 绘制十二长生宫
+     * 每宫30度，共12宫
+     */
+    private fun drawChangSheng12(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 12f  // 每宫30度
 
-        for (i in 0 until 8) {
+        for (i in 0 until 12) {
             val startAngle = i * step - currentDegree - step / 2
-            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
-            val textR = (outerR + innerR) / 2f
-            val x = (textR * cos(midAngle)).toFloat()
-            val y = (textR * sin(midAngle)).toFloat()
-
-            textPaint.textAlign = Paint.Align.CENTER
-            textPaint.textSize = (outerR - innerR) * 0.4f
-            textPaint.color = Color.parseColor("#FFD700")
-            textPaint.typeface = Typeface.DEFAULT_BOLD
-
-            canvas.save()
-            canvas.translate(x, y)
-            canvas.rotate((startAngle + step / 2 + 90).toFloat())
-            canvas.drawText(baGua[i], 0f, 0f, textPaint)
-            canvas.restore()
 
             paint.strokeWidth = 1f
             paint.color = Color.parseColor("#B8860B")
@@ -632,6 +601,82 @@ class LuopanView @JvmOverloads constructor(
                 (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
                 (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
             )
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.25f
+
+            // 根据吉凶显示颜色
+            if (isChangShengGood(i)) {
+                textPaint.color = Color.parseColor("#90EE90")  // 吉 - 浅绿
+                textPaint.typeface = Typeface.DEFAULT_BOLD
+            } else {
+                textPaint.color = Color.parseColor("#DAA520")  // 平/凶 - 金色
+                textPaint.typeface = Typeface.DEFAULT
+            }
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            // 显示长生宫名称（简化显示，只显示前两个字）
+            val displayText = changSheng12[i].substring(0, minOf(2, changSheng12[i].length))
+            canvas.drawText(displayText, 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制二十八宿
+     * 每宿度数不同，总计360度
+     */
+    private fun draw28Xiu(canvas: Canvas, outerR: Float, innerR: Float) {
+        var currentAngle = 0f
+
+        for (i in 0 until 28) {
+            val step = xiu28Degrees[i]
+            val startAngle = currentAngle - currentDegree - step / 2
+
+            paint.strokeWidth = 0.5f
+            paint.color = Color.parseColor("#5D4037")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.35f
+
+            // 四象颜色区分
+            textPaint.color = when {
+                i < 7 -> Color.parseColor("#90EE90")    // 东方青龙 - 绿
+                i < 14 -> Color.parseColor("#87CEEB")   // 北方玄武 - 蓝
+                i < 21 -> Color.parseColor("#FFD700")   // 西方白虎 - 金
+                else -> Color.parseColor("#FF6B6B")     // 南方朱雀 - 红
+            }
+            textPaint.typeface = Typeface.DEFAULT_BOLD
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            canvas.drawText(xiu28[i], 0f, 0f, textPaint)
+            canvas.restore()
+
+            currentAngle += step
         }
 
         paint.strokeWidth = 2f
@@ -641,7 +686,7 @@ class LuopanView @JvmOverloads constructor(
     }
 
     private fun drawTianChi(canvas: Canvas) {
-        val poolRadius = radius * 0.09f
+        val poolRadius = radius * 0.035f
 
         val poolPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         poolPaint.style = Paint.Style.FILL
@@ -649,7 +694,7 @@ class LuopanView @JvmOverloads constructor(
         poolPaint.shader = gradient
         canvas.drawCircle(0f, 0f, poolRadius, poolPaint)
 
-        paint.strokeWidth = 3f
+        paint.strokeWidth = 2f
         paint.color = Color.parseColor("#FFD700")
         canvas.drawCircle(0f, 0f, poolRadius, paint)
 
@@ -662,9 +707,9 @@ class LuopanView @JvmOverloads constructor(
         canvas.drawLine(0f, -poolRadius * 0.8f, 0f, poolRadius * 0.8f, paint)
 
         centerPaint.color = Color.parseColor("#FFD700")
-        canvas.drawCircle(0f, 0f, 6f, centerPaint)
+        canvas.drawCircle(0f, 0f, 4f, centerPaint)
         centerPaint.color = Color.parseColor("#CC0000")
-        canvas.drawCircle(0f, 0f, 3f, centerPaint)
+        canvas.drawCircle(0f, 0f, 2f, centerPaint)
     }
 
     private fun drawNeedle(canvas: Canvas) {
@@ -672,9 +717,9 @@ class LuopanView @JvmOverloads constructor(
 
         val northPath = Path()
         northPath.moveTo(0f, -needleLength)
-        northPath.lineTo(-8f, 0f)
-        northPath.lineTo(0f, -10f)
-        northPath.lineTo(8f, 0f)
+        northPath.lineTo(-6f, 0f)
+        northPath.lineTo(0f, -8f)
+        northPath.lineTo(6f, 0f)
         northPath.close()
 
         val northPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -684,9 +729,9 @@ class LuopanView @JvmOverloads constructor(
 
         val southPath = Path()
         southPath.moveTo(0f, needleLength)
-        southPath.lineTo(-8f, 0f)
-        southPath.lineTo(0f, 10f)
-        southPath.lineTo(8f, 0f)
+        southPath.lineTo(-6f, 0f)
+        southPath.lineTo(0f, 8f)
+        southPath.lineTo(6f, 0f)
         southPath.close()
 
         val southPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -695,6 +740,6 @@ class LuopanView @JvmOverloads constructor(
         canvas.drawPath(southPath, southPaint)
 
         centerPaint.color = Color.parseColor("#FFD700")
-        canvas.drawCircle(0f, 0f, 5f, centerPaint)
+        canvas.drawCircle(0f, 0f, 4f, centerPaint)
     }
 }

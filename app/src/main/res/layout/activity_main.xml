@@ -184,7 +184,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="吉"
+            android:text="可用"
             android:textColor="#87CEEB"
             android:textSize="11sp"
             android:gravity="center"
@@ -219,6 +219,72 @@
             android:layout_weight="1"
             android:text="吉"
             android:textColor="#DDA0DD"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 十二长生宫 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/changShengText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="长生: 寅"
+            android:textColor="#FFA500"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/changShengStatusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="吉"
+            android:textColor="#FFA500"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 二十八宿 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/xiu28Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="二十八宿: 角"
+            android:textColor="#98FB98"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/xiu28XiangText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="东方青龙"
+            android:textColor="#98FB98"
             android:textSize="11sp"
             android:gravity="center"
             android:fontFamily="serif" />

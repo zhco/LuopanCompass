@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var chuanShanStatusText: TextView
     private lateinit var touDiText: TextView
     private lateinit var touDiStatusText: TextView
+    private lateinit var changShengText: TextView
+    private lateinit var changShengStatusText: TextView
+    private lateinit var xiu28Text: TextView
+    private lateinit var xiu28XiangText: TextView
     private lateinit var locationText: TextView
 
     private lateinit var sensorManager: SensorManager
@@ -146,6 +150,39 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "己亥", "辛亥", "癸亥"
     )
 
+    // 十二长生宫
+    private val changSheng12 = arrayOf(
+        "长生", "沐浴", "冠带", "临官", "帝旺", "衰",
+        "病", "死", "墓", "绝", "胎", "养"
+    )
+
+    // 十二长生宫对应的地支（以火局为例，从寅开始长生）
+    private val changShengZhi = arrayOf("寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑")
+
+    // 二十八宿
+    private val xiu28 = arrayOf(
+        "角", "亢", "氐", "房", "心", "尾", "箕",
+        "斗", "牛", "女", "虚", "危", "室", "壁",
+        "奎", "娄", "胃", "昴", "毕", "觜", "参",
+        "井", "鬼", "柳", "星", "张", "翼", "轸"
+    )
+
+    // 二十八宿度数分配（每宿度数不同，总计360度）
+    private val xiu28Degrees = floatArrayOf(
+        12.5f, 10.0f, 15.0f, 5.0f, 5.0f, 18.0f, 11.0f,
+        26.0f, 8.0f, 12.0f, 10.0f, 17.0f, 16.0f, 9.0f,
+        16.0f, 12.0f, 14.0f, 11.0f, 16.0f, 2.0f, 9.0f,
+        33.0f, 3.0f, 15.0f, 7.0f, 18.0f, 18.0f, 17.0f
+    )
+
+    // 二十八宿四象
+    private val xiu28Xiang = arrayOf(
+        "东方青龙", "东方青龙", "东方青龙", "东方青龙", "东方青龙", "东方青龙", "东方青龙",
+        "北方玄武", "北方玄武", "北方玄武", "北方玄武", "北方玄武", "北方玄武", "北方玄武",
+        "西方白虎", "西方白虎", "西方白虎", "西方白虎", "西方白虎", "西方白虎", "西方白虎",
+        "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀"
+    )
+
     // 方位名称
     private val directions = arrayOf("北", "北偏东", "东北", "东偏北", "东", "东偏南", "东南", "南偏东",
         "南", "南偏西", "西南", "西偏南", "西", "西偏北", "西北", "北偏西")
@@ -167,6 +204,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         chuanShanStatusText = findViewById(R.id.chuanShanStatusText)
         touDiText = findViewById(R.id.touDiText)
         touDiStatusText = findViewById(R.id.touDiStatusText)
+        changShengText = findViewById(R.id.changShengText)
+        changShengStatusText = findViewById(R.id.changShengStatusText)
+        xiu28Text = findViewById(R.id.xiu28Text)
+        xiu28XiangText = findViewById(R.id.xiu28XiangText)
         locationText = findViewById(R.id.locationText)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -328,5 +369,36 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             touDiStatusText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
             touDiText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
         }
+
+        // 十二长生宫 (每宫30度，共12宫)
+        val changShengIndex = (degree / 30f).toInt() % 12
+        val changShengName = changSheng12[changShengIndex]
+        val changShengZhiName = changShengZhi[changShengIndex]
+        changShengText.text = "$changShengName: $changShengZhiName"
+        val changShengGood = changShengIndex == 0 || changShengIndex == 2 || changShengIndex == 3 || changShengIndex == 4
+        if (changShengGood) {
+            changShengStatusText.text = "吉"
+            changShengStatusText.setTextColor(android.graphics.Color.parseColor("#FFA500"))
+            changShengText.setTextColor(android.graphics.Color.parseColor("#FFA500"))
+        } else {
+            changShengStatusText.text = "平"
+            changShengStatusText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+            changShengText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+        }
+
+        // 二十八宿 (每宿度数不同)
+        var xiuIndex = 0
+        var accumulatedDegrees = 0f
+        for (i in xiu28Degrees.indices) {
+            accumulatedDegrees += xiu28Degrees[i]
+            if (degree < accumulatedDegrees) {
+                xiuIndex = i
+                break
+            }
+        }
+        xiu28Text.text = "二十八宿: ${xiu28[xiuIndex]}"
+        xiu28XiangText.text = xiu28Xiang[xiuIndex]
+        xiu28Text.setTextColor(android.graphics.Color.parseColor("#98FB98"))
+        xiu28XiangText.setTextColor(android.graphics.Color.parseColor("#98FB98"))
     }
 }
