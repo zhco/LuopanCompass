@@ -895,7 +895,7 @@ class LuopanView @JvmOverloads constructor(
         val step = 360f / 9f  // 每星40度
 
         for (i in 0 until 9) {
-            val startAngle = i * step - currentDegree - step / 2
+            val startAngle = i * step - currentDegree - step / 2 + 20f
 
             paint.strokeWidth = 1f
             paint.color = Color.parseColor("#B8860B")

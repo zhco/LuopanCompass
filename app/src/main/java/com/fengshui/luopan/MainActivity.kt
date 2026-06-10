@@ -635,7 +635,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         xiu28XiangText.setTextColor(android.graphics.Color.parseColor("#98FB98"))
 
         // 九星 (每星40度)
-        val jiuXingIndex = (degree / 40f).toInt() % 9
+        val jiuXingIndex = ((degree + 20f) / 40f).toInt() % 9
         val jiuXingName = jiuXing[jiuXingIndex]
         val jiuXingWX = jiuXingWuXing[jiuXingIndex]
         val jiuXingJX = jiuXingJiXiong[jiuXingIndex]
