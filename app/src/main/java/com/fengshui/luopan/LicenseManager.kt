@@ -21,7 +21,7 @@ class LicenseManager(context: Context) {
         private const val KEY_ACTIVATED = "is_activated"
         private const val KEY_ACTIVATE_TIME = "activate_time"
         private const val KEY_TRIAL_COUNT = "trial_count"
-        private const val MAX_TRIAL = 3 // 试用次数
+        const val MAX_TRIAL = 3 // 试用次数
 
         // 授权码格式: XXXX-XXXX-XXXX-XXXX (基于设备ID生成)
         fun generateLicense(deviceId: String): String {
