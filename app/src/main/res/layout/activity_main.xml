@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bgColor"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="风水罗盘"
+        android:textColor="@color/gold"
+        android:textSize="22sp"
+        android:fontFamily="serif"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:shadowColor="@color/darkGold"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2" />
+
+    <com.fengshui.luopan.LuopanView
+        android:id="@+id/luopanView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/degreeText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0.0°"
+            android:textColor="@color/gold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/directionText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="北"
+            android:textColor="@color/gold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/mountainText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="山: 壬"
+            android:textColor="@color/cream"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+        <TextView
+            android:id="@+id/waterText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="水: 丙"
+            android:textColor="@color/cream"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/locationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="定位中..."
+        android:textColor="@color/darkGold"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:fontFamily="monospace" />
+
+</LinearLayout>

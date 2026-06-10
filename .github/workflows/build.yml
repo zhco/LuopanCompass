@@ -1,0 +1,67 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build Release APK
+      run: ./gradlew assembleRelease
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: LuopanCompass-release
+        path: app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: 风水罗盘 v1.0.${{ github.run_number }}
+        files: app/build/outputs/apk/release/app-release.apk
+        body: |
+          ## 风水罗盘 APK
+          
+          ### 功能特性
+          - 🧭 真实指南针传感器驱动
+          - 🏔️ 二十四山天盘/地盘显示
+          - ☯️ 八卦方位标识
+          - 📍 GPS定位显示
+          - 🎨 传统风水罗盘风格
+          
+          ### 安装说明
+          下载 APK 文件，在手机上安装即可使用。
+          需要授予位置权限以获取GPS坐标。
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
