@@ -40,16 +40,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="您的设备授权码"
+            android:text="您的设备码（请发给管理员获取授权码）"
             android:textColor="@color/darkGold"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:layout_marginBottom="8dp" />
 
         <TextView
             android:id="@+id/deviceIdText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="XXXX-XXXX-XXXX-XXXX"
+            android:text="xxxxxxxxxxxxxxxx"
             android:textColor="@color/gold"
             android:textSize="16sp"
             android:fontFamily="monospace"
@@ -62,7 +62,7 @@
             android:id="@+id/copyDeviceIdButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="复制授权码"
+            android:text="复制设备码"
             android:textColor="@color/gold"
             android:backgroundTint="#3E2723"
             android:layout_gravity="center"

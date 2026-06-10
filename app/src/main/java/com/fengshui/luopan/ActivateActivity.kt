@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -50,16 +51,17 @@ class ActivateActivity : AppCompatActivity() {
         copyDeviceIdButton = findViewById(R.id.copyDeviceIdButton)
         remainingTrialsText = findViewById(R.id.remainingTrialsText)
 
-        // 显示设备ID和对应的授权码
-        val correctLicense = licenseManager.getCorrectLicense()
-        deviceIdText.text = "设备授权码:\n$correctLicense"
+        // 只显示设备码（Android ID），不显示授权码
+        // 用户需要把设备码发给管理员，由管理员生成授权码
+        val deviceId = getDeviceId()
+        deviceIdText.text = "设备码:\n$deviceId"
 
-        // 复制授权码按钮
+        // 复制设备码按钮
         copyDeviceIdButton.setOnClickListener {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("授权码", correctLicense)
+            val clip = ClipData.newPlainText("设备码", deviceId)
             clipboard.setPrimaryClip(clip)
-            Toast.makeText(this, "授权码已复制到剪贴板", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "设备码已复制到剪贴板", Toast.LENGTH_SHORT).show()
         }
 
         // 激活按钮
@@ -126,7 +128,15 @@ class ActivateActivity : AppCompatActivity() {
         if (licenseManager.getRemainingTrials() > 0 || licenseManager.isActivated()) {
             super.onBackPressed()
         } else {
-            Toast.makeText(this, "请先激活或试用应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "请先激活或试用应用", Toast.makeText_SHORT).show()
         }
+    }
+
+    /**
+     * 获取设备唯一标识（Android ID）
+     */
+    private fun getDeviceId(): String {
+        return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+            ?: "未知设备"
     }
 }
