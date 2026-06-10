@@ -10,7 +10,7 @@ import kotlin.math.min
 
 /**
  * 风水罗盘自定义绘制视图
- * 包含：天池、八卦、一百二十分金、地盘24山、人盘24山、天盘24山、周天刻度
+ * 包含：天池、八卦、透地六十龙、穿山七十二龙、一百二十分金、地盘24山、人盘24山、天盘24山、周天刻度
  */
 class LuopanView @JvmOverloads constructor(
     context: Context,
@@ -45,69 +45,163 @@ class LuopanView @JvmOverloads constructor(
     // 八卦名称
     private val baGua = arrayOf("坎", "艮", "震", "巽", "离", "坤", "兑", "乾")
 
-    // 一百二十分金 - 每山5格，共120格
-    // 每格对应1个天干或空亡，标注吉凶
-    // 格式: 天干 + 吉凶标记
+    // 一百二十分金
     private val fenJin120 = arrayOf(
-        // 子山 (15°范围，5格，每格3°)
         "甲子", "丙子", "戊子", "庚子", "壬子",
-        // 癸山
         "甲子", "丙子", "戊子", "庚子", "壬子",
-        // 丑山
         "乙丑", "丁丑", "己丑", "辛丑", "癸丑",
-        // 艮山
         "丙寅", "戊寅", "庚寅", "壬寅", "甲寅",
-        // 寅山
         "丙寅", "戊寅", "庚寅", "壬寅", "甲寅",
-        // 甲山
         "丙寅", "戊寅", "庚寅", "壬寅", "甲寅",
-        // 卯山
         "丁卯", "己卯", "辛卯", "癸卯", "乙卯",
-        // 乙山
         "丁卯", "己卯", "辛卯", "癸卯", "乙卯",
-        // 辰山
         "戊辰", "庚辰", "壬辰", "甲辰", "丙辰",
-        // 巽山
         "戊辰", "庚辰", "壬辰", "甲辰", "丙辰",
-        // 巳山
         "己巳", "辛巳", "癸巳", "乙巳", "丁巳",
-        // 丙山
         "己巳", "辛巳", "癸巳", "乙巳", "丁巳",
-        // 午山
         "庚午", "壬午", "甲午", "丙午", "戊午",
-        // 丁山
         "庚午", "壬午", "甲午", "丙午", "戊午",
-        // 未山
         "辛未", "癸未", "乙未", "丁未", "己未",
-        // 坤山
         "辛未", "癸未", "乙未", "丁未", "己未",
-        // 申山
         "壬申", "甲申", "丙申", "戊申", "庚申",
-        // 庚山
         "壬申", "甲申", "丙申", "戊申", "庚申",
-        // 酉山
         "癸酉", "乙酉", "丁酉", "己酉", "辛酉",
-        // 辛山
         "癸酉", "乙酉", "丁酉", "己酉", "辛酉",
-        // 戌山
         "甲戌", "丙戌", "戊戌", "庚戌", "壬戌",
-        // 乾山
         "甲戌", "丙戌", "戊戌", "庚戌", "壬戌",
-        // 亥山
         "乙亥", "丁亥", "己亥", "辛亥", "癸亥",
-        // 壬山
         "乙亥", "丁亥", "己亥", "辛亥", "癸亥"
     )
 
+    // 穿山七十二龙
+    // 六十甲子配七十二龙，每龙5度（360/72=5）
+    // 分布在二十四山之下，每山3龙
+    // 其中有12个空亡龙（大空亡）
+    private val chuanShan72 = arrayOf(
+        // 壬山 (3龙)
+        "甲子", "丙子", "戊子",
+        // 子山 (3龙)
+        "庚子", "壬子", "空亡",
+        // 癸山 (3龙)
+        "乙丑", "丁丑", "己丑",
+        // 丑山 (3龙)
+        "辛丑", "癸丑", "空亡",
+        // 艮山 (3龙)
+        "丙寅", "戊寅", "庚寅",
+        // 寅山 (3龙)
+        "壬寅", "甲寅", "空亡",
+        // 甲山 (3龙)
+        "丁卯", "己卯", "辛卯",
+        // 卯山 (3龙)
+        "癸卯", "乙卯", "空亡",
+        // 乙山 (3龙)
+        "戊辰", "庚辰", "壬辰",
+        // 辰山 (3龙)
+        "甲辰", "丙辰", "空亡",
+        // 巽山 (3龙)
+        "己巳", "辛巳", "癸巳",
+        // 巳山 (3龙)
+        "乙巳", "丁巳", "空亡",
+        // 丙山 (3龙)
+        "庚午", "壬午", "甲午",
+        // 午山 (3龙)
+        "丙午", "戊午", "空亡",
+        // 丁山 (3龙)
+        "辛未", "癸未", "乙未",
+        // 未山 (3龙)
+        "丁未", "己未", "空亡",
+        // 坤山 (3龙)
+        "壬申", "甲申", "丙申",
+        // 申山 (3龙)
+        "戊申", "庚申", "空亡",
+        // 庚山 (3龙)
+        "癸酉", "乙酉", "丁酉",
+        // 酉山 (3龙)
+        "己酉", "辛酉", "空亡",
+        // 辛山 (3龙)
+        "甲戌", "丙戌", "戊戌",
+        // 戌山 (3龙)
+        "庚戌", "壬戌", "空亡",
+        // 乾山 (3龙)
+        "乙亥", "丁亥", "己亥",
+        // 亥山 (3龙)
+        "辛亥", "癸亥", "空亡"
+    )
+
+    // 透地六十龙
+    // 六十甲子配六十龙，每龙6度（360/60=6）
+    // 分布在二十四山之下，每山2-3龙
+    private val touDi60 = arrayOf(
+        // 壬山 (2龙)
+        "甲子", "丙子",
+        // 子山 (3龙)
+        "戊子", "庚子", "壬子",
+        // 癸山 (2龙)
+        "乙丑", "丁丑",
+        // 丑山 (3龙)
+        "己丑", "辛丑", "癸丑",
+        // 艮山 (2龙)
+        "丙寅", "戊寅",
+        // 寅山 (3龙)
+        "庚寅", "壬寅", "甲寅",
+        // 甲山 (2龙)
+        "丁卯", "己卯",
+        // 卯山 (3龙)
+        "辛卯", "癸卯", "乙卯",
+        // 乙山 (2龙)
+        "戊辰", "庚辰",
+        // 辰山 (3龙)
+        "壬辰", "甲辰", "丙辰",
+        // 巽山 (2龙)
+        "己巳", "辛巳",
+        // 巳山 (3龙)
+        "癸巳", "乙巳", "丁巳",
+        // 丙山 (2龙)
+        "庚午", "壬午",
+        // 午山 (3龙)
+        "甲午", "丙午", "戊午",
+        // 丁山 (2龙)
+        "辛未", "癸未",
+        // 未山 (3龙)
+        "乙未", "丁未", "己未",
+        // 坤山 (2龙)
+        "壬申", "甲申",
+        // 申山 (3龙)
+        "丙申", "戊申", "庚申",
+        // 庚山 (2龙)
+        "癸酉", "乙酉",
+        // 酉山 (3龙)
+        "丁酉", "己酉", "辛酉",
+        // 辛山 (2龙)
+        "甲戌", "丙戌",
+        // 戌山 (3龙)
+        "戊戌", "庚戌", "壬戌",
+        // 乾山 (2龙)
+        "乙亥", "丁亥",
+        // 亥山 (3龙)
+        "己亥", "辛亥", "癸亥"
+    )
+
     // 一百二十分金吉凶判断
-    // 根据杨公风水，分金有：旺、相、孤、虚、曜、煞等
-    // 简化：甲子、丙子、戊子、庚子、壬子 等阳干为吉，阴干配合为凶
-    // 实际应结合穿山透地，这里做简化标记
     private fun isFenJinGood(index: Int): Boolean {
-        // 简化判断：每山的第1、3、5格为吉，第2、4格为凶（或空亡）
-        // 实际风水需结合具体流派
         val posInShan = index % 5
         return posInShan == 0 || posInShan == 2 || posInShan == 4
+    }
+
+    // 穿山七十二龙吉凶判断
+    // 空亡为凶，其他根据纳音五行判断
+    private fun isChuanShanGood(index: Int): Boolean {
+        return chuanShan72[index] != "空亡"
+    }
+
+    // 透地六十龙吉凶判断
+    // 根据纳音五行与坐山五行生克判断
+    // 简化：甲子、丙子、戊子、庚子、壬子 等阳干为吉
+    private fun isTouDiGood(index: Int): Boolean {
+        val name = touDi60[index]
+        val gan = name[0]
+        // 阳干为吉：甲丙戊庚壬
+        return gan in listOf('甲', '丙', '戊', '庚', '壬')
     }
 
     // 当前角度
@@ -183,10 +277,16 @@ class LuopanView @JvmOverloads constructor(
         draw24ShanRing(canvas, renPan24, radius * 0.65f, radius * 0.52f, 15f, true)
 
         // 绘制一百二十分金
-        drawFenJin120(canvas, radius * 0.50f, radius * 0.38f)
+        drawFenJin120(canvas, radius * 0.50f, radius * 0.40f)
+
+        // 绘制穿山七十二龙
+        drawChuanShan72(canvas, radius * 0.38f, radius * 0.28f)
+
+        // 绘制透地六十龙
+        drawTouDi60(canvas, radius * 0.26f, radius * 0.18f)
 
         // 绘制八卦圈
-        drawBaGuaRing(canvas, radius * 0.36f, radius * 0.26f)
+        drawBaGuaRing(canvas, radius * 0.16f, radius * 0.10f)
 
         // 绘制天池 (中心)
         drawTianChi(canvas)
@@ -230,10 +330,10 @@ class LuopanView @JvmOverloads constructor(
             val angleRad = Math.toRadians(i.toDouble() - currentDegree.toDouble())
             val innerR = radius * 0.97f
             val outerR = when {
-                i % 90 == 0 -> radius * 0.94f  // 四正
-                i % 45 == 0 -> radius * 0.95f  // 四隅
-                i % 15 == 0 -> radius * 0.96f  // 二十四山
-                i % 5 == 0 -> radius * 0.965f  // 每5度
+                i % 90 == 0 -> radius * 0.94f
+                i % 45 == 0 -> radius * 0.95f
+                i % 15 == 0 -> radius * 0.96f
+                i % 5 == 0 -> radius * 0.965f
                 else -> radius * 0.97f
             }
             val x1 = (innerR * cos(angleRad)).toFloat()
@@ -327,16 +427,13 @@ class LuopanView @JvmOverloads constructor(
 
     /**
      * 绘制一百二十分金
-     * 每山5格，共120格，每格3度
-     * 标注吉凶：吉格绿色，凶格红色
      */
     private fun drawFenJin120(canvas: Canvas, outerR: Float, innerR: Float) {
-        val step = 360f / 120f  // 每格3度
+        val step = 360f / 120f
 
         for (i in 0 until 120) {
             val startAngle = i * step - currentDegree - step / 2
 
-            // 分隔线
             paint.strokeWidth = 0.5f
             paint.color = Color.parseColor("#5D4037")
             val rad = Math.toRadians(startAngle.toDouble())
@@ -345,7 +442,6 @@ class LuopanView @JvmOverloads constructor(
                 (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
             )
 
-            // 每山的中间格（第3格）加粗分隔
             if (i % 5 == 0) {
                 paint.strokeWidth = 1f
                 paint.color = Color.parseColor("#B8860B")
@@ -355,7 +451,6 @@ class LuopanView @JvmOverloads constructor(
                 )
             }
 
-            // 绘制分金文字（只显示部分，避免拥挤）
             val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
             val textR = (outerR + innerR) / 2f
             val x = (textR * cos(midAngle)).toFloat()
@@ -364,15 +459,13 @@ class LuopanView @JvmOverloads constructor(
             textPaint.textAlign = Paint.Align.CENTER
             textPaint.textSize = (outerR - innerR) * 0.25f
 
-            // 根据吉凶显示颜色
             if (isFenJinGood(i)) {
-                textPaint.color = Color.parseColor("#90EE90")  // 吉 - 浅绿
+                textPaint.color = Color.parseColor("#90EE90")
             } else {
-                textPaint.color = Color.parseColor("#FF6B6B")  // 凶 - 浅红
+                textPaint.color = Color.parseColor("#FF6B6B")
             }
             textPaint.typeface = Typeface.DEFAULT
 
-            // 只显示天干部分（第一个字），避免拥挤
             val displayText = fenJin120[i].substring(0, 1)
 
             canvas.save()
@@ -382,7 +475,129 @@ class LuopanView @JvmOverloads constructor(
             canvas.restore()
         }
 
-        // 边线
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制穿山七十二龙
+     * 每龙5度，共72龙
+     * 空亡龙用红色标注
+     */
+    private fun drawChuanShan72(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 72f  // 每龙5度
+
+        for (i in 0 until 72) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 0.5f
+            paint.color = Color.parseColor("#5D4037")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            // 每山分隔（每3龙一山）
+            if (i % 3 == 0) {
+                paint.strokeWidth = 1f
+                paint.color = Color.parseColor("#B8860B")
+                canvas.drawLine(
+                    (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                    (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+                )
+            }
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.3f
+
+            val name = chuanShan72[i]
+            if (name == "空亡") {
+                textPaint.color = Color.parseColor("#FF0000")  // 空亡 - 红色
+                textPaint.typeface = Typeface.DEFAULT_BOLD
+            } else if (isChuanShanGood(i)) {
+                textPaint.color = Color.parseColor("#90EE90")  // 吉 - 绿色
+                textPaint.typeface = Typeface.DEFAULT
+            } else {
+                textPaint.color = Color.parseColor("#FF6B6B")  // 凶 - 浅红
+                textPaint.typeface = Typeface.DEFAULT
+            }
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            // 只显示天干部分，避免拥挤
+            val displayText = if (name == "空亡") "空" else name.substring(0, 1)
+            canvas.drawText(displayText, 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制透地六十龙
+     * 每龙6度，共60龙
+     */
+    private fun drawTouDi60(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 60f  // 每龙6度
+
+        for (i in 0 until 60) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 0.5f
+            paint.color = Color.parseColor("#5D4037")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            // 每山分隔
+            if (i % 3 == 0 || i % 2 == 0) {
+                paint.strokeWidth = 1f
+                paint.color = Color.parseColor("#B8860B")
+                canvas.drawLine(
+                    (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                    (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+                )
+            }
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.3f
+
+            if (isTouDiGood(i)) {
+                textPaint.color = Color.parseColor("#90EE90")
+                textPaint.typeface = Typeface.DEFAULT
+            } else {
+                textPaint.color = Color.parseColor("#FF6B6B")
+                textPaint.typeface = Typeface.DEFAULT
+            }
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            // 只显示天干部分
+            val displayText = touDi60[i].substring(0, 1)
+            canvas.drawText(displayText, 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
         paint.strokeWidth = 2f
         paint.color = Color.parseColor("#FFD700")
         canvas.drawCircle(0f, 0f, outerR, paint)
@@ -410,7 +625,6 @@ class LuopanView @JvmOverloads constructor(
             canvas.drawText(baGua[i], 0f, 0f, textPaint)
             canvas.restore()
 
-            // 分隔线
             paint.strokeWidth = 1f
             paint.color = Color.parseColor("#B8860B")
             val rad = Math.toRadians(startAngle.toDouble())
@@ -427,7 +641,7 @@ class LuopanView @JvmOverloads constructor(
     }
 
     private fun drawTianChi(canvas: Canvas) {
-        val poolRadius = radius * 0.24f
+        val poolRadius = radius * 0.09f
 
         val poolPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         poolPaint.style = Paint.Style.FILL

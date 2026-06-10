@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var renWaterText: TextView
     private lateinit var fenJinText: TextView
     private lateinit var fenJinStatusText: TextView
+    private lateinit var chuanShanText: TextView
+    private lateinit var chuanShanStatusText: TextView
+    private lateinit var touDiText: TextView
+    private lateinit var touDiStatusText: TextView
     private lateinit var locationText: TextView
 
     private lateinit var sensorManager: SensorManager
@@ -86,6 +90,62 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "乙亥", "丁亥", "己亥", "辛亥", "癸亥"
     )
 
+    // 穿山七十二龙
+    private val chuanShan72 = arrayOf(
+        "甲子", "丙子", "戊子",
+        "庚子", "壬子", "空亡",
+        "乙丑", "丁丑", "己丑",
+        "辛丑", "癸丑", "空亡",
+        "丙寅", "戊寅", "庚寅",
+        "壬寅", "甲寅", "空亡",
+        "丁卯", "己卯", "辛卯",
+        "癸卯", "乙卯", "空亡",
+        "戊辰", "庚辰", "壬辰",
+        "甲辰", "丙辰", "空亡",
+        "己巳", "辛巳", "癸巳",
+        "乙巳", "丁巳", "空亡",
+        "庚午", "壬午", "甲午",
+        "丙午", "戊午", "空亡",
+        "辛未", "癸未", "乙未",
+        "丁未", "己未", "空亡",
+        "壬申", "甲申", "丙申",
+        "戊申", "庚申", "空亡",
+        "癸酉", "乙酉", "丁酉",
+        "己酉", "辛酉", "空亡",
+        "甲戌", "丙戌", "戊戌",
+        "庚戌", "壬戌", "空亡",
+        "乙亥", "丁亥", "己亥",
+        "辛亥", "癸亥", "空亡"
+    )
+
+    // 透地六十龙
+    private val touDi60 = arrayOf(
+        "甲子", "丙子",
+        "戊子", "庚子", "壬子",
+        "乙丑", "丁丑",
+        "己丑", "辛丑", "癸丑",
+        "丙寅", "戊寅",
+        "庚寅", "壬寅", "甲寅",
+        "丁卯", "己卯",
+        "辛卯", "癸卯", "乙卯",
+        "戊辰", "庚辰",
+        "壬辰", "甲辰", "丙辰",
+        "己巳", "辛巳",
+        "癸巳", "乙巳", "丁巳",
+        "庚午", "壬午",
+        "甲午", "丙午", "戊午",
+        "辛未", "癸未",
+        "乙未", "丁未", "己未",
+        "壬申", "甲申",
+        "丙申", "戊申", "庚申",
+        "癸酉", "乙酉",
+        "丁酉", "己酉", "辛酉",
+        "甲戌", "丙戌",
+        "戊戌", "庚戌", "壬戌",
+        "乙亥", "丁亥",
+        "己亥", "辛亥", "癸亥"
+    )
+
     // 方位名称
     private val directions = arrayOf("北", "北偏东", "东北", "东偏北", "东", "东偏南", "东南", "南偏东",
         "南", "南偏西", "西南", "西偏南", "西", "西偏北", "西北", "北偏西")
@@ -103,6 +163,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         renWaterText = findViewById(R.id.renWaterText)
         fenJinText = findViewById(R.id.fenJinText)
         fenJinStatusText = findViewById(R.id.fenJinStatusText)
+        chuanShanText = findViewById(R.id.chuanShanText)
+        chuanShanStatusText = findViewById(R.id.chuanShanStatusText)
+        touDiText = findViewById(R.id.touDiText)
+        touDiStatusText = findViewById(R.id.touDiStatusText)
         locationText = findViewById(R.id.locationText)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -223,11 +287,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // 一百二十分金 (每格3度，共120格)
         val fenJinIndex = (degree / 3f).toInt() % 120
         fenJinText.text = "分金: ${fenJin120[fenJinIndex]}"
-
-        // 分金吉凶判断
         val posInShan = fenJinIndex % 5
-        val isGood = posInShan == 0 || posInShan == 2 || posInShan == 4
-        if (isGood) {
+        val fenJinGood = posInShan == 0 || posInShan == 2 || posInShan == 4
+        if (fenJinGood) {
             fenJinStatusText.text = "吉"
             fenJinStatusText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
             fenJinText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
@@ -235,6 +297,36 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             fenJinStatusText.text = "凶"
             fenJinStatusText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
             fenJinText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
+        }
+
+        // 穿山七十二龙 (每龙5度，共72龙)
+        val chuanShanIndex = (degree / 5f).toInt() % 72
+        val chuanShanName = chuanShan72[chuanShanIndex]
+        chuanShanText.text = "穿山: $chuanShanName"
+        if (chuanShanName == "空亡") {
+            chuanShanStatusText.text = "空亡"
+            chuanShanStatusText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+            chuanShanText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+        } else {
+            chuanShanStatusText.text = "可用"
+            chuanShanStatusText.setTextColor(android.graphics.Color.parseColor("#87CEEB"))
+            chuanShanText.setTextColor(android.graphics.Color.parseColor("#87CEEB"))
+        }
+
+        // 透地六十龙 (每龙6度，共60龙)
+        val touDiIndex = (degree / 6f).toInt() % 60
+        val touDiName = touDi60[touDiIndex]
+        touDiText.text = "透地: $touDiName"
+        val gan = touDiName[0]
+        val touDiGood = gan in listOf('甲', '丙', '戊', '庚', '壬')
+        if (touDiGood) {
+            touDiStatusText.text = "吉"
+            touDiStatusText.setTextColor(android.graphics.Color.parseColor("#DDA0DD"))
+            touDiText.setTextColor(android.graphics.Color.parseColor("#DDA0DD"))
+        } else {
+            touDiStatusText.text = "凶"
+            touDiStatusText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
+            touDiText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
         }
     }
 }
