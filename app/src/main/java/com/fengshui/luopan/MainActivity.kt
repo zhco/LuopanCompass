@@ -290,7 +290,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "煞", "煞", "煞", "煞", "煞", "煞", "煞", "煞"
     )
 
-    // 纳音五行（六十甲子纳音）
+    // 纳音五行（完整六十甲子纳音）
     private val naYin60 = arrayOf(
         "海中金", "海中金", "海中金", "海中金", "海中金", "海中金",
         "炉中火", "炉中火", "炉中火", "炉中火", "炉中火", "炉中火",
@@ -301,10 +301,30 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "涧下水", "涧下水", "涧下水", "涧下水", "涧下水", "涧下水",
         "城头土", "城头土", "城头土", "城头土", "城头土", "城头土",
         "白蜡金", "白蜡金", "白蜡金", "白蜡金", "白蜡金", "白蜡金",
-        "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木"
+        "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木",
+        "泉中水", "泉中水", "泉中水", "泉中水", "泉中水", "泉中水",
+        "屋上土", "屋上土", "屋上土", "屋上土", "屋上土", "屋上土",
+        "霹雳火", "霹雳火", "霹雳火", "霹雳火", "霹雳火", "霹雳火",
+        "松柏木", "松柏木", "松柏木", "松柏木", "松柏木", "松柏木",
+        "长流水", "长流水", "长流水", "长流水", "长流水", "长流水",
+        "沙中金", "沙中金", "沙中金", "沙中金", "沙中金", "沙中金",
+        "山下火", "山下火", "山下火", "山下火", "山下火", "山下火",
+        "平地木", "平地木", "平地木", "平地木", "平地木", "平地木",
+        "壁上土", "壁上土", "壁上土", "壁上土", "壁上土", "壁上土",
+        "金箔金", "金箔金", "金箔金", "金箔金", "金箔金", "金箔金",
+        "覆灯火", "覆灯火", "覆灯火", "覆灯火", "覆灯火", "覆灯火",
+        "天河水", "天河水", "天河水", "天河水", "天河水", "天河水",
+        "大驿土", "大驿土", "大驿土", "大驿土", "大驿土", "大驿土",
+        "钗钏金", "钗钏金", "钗钏金", "钗钏金", "钗钏金", "钗钏金",
+        "桑柘木", "桑柘木", "桑柘木", "桑柘木", "桑柘木", "桑柘木",
+        "大溪水", "大溪水", "大溪水", "大溪水", "大溪水", "大溪水",
+        "沙中土", "沙中土", "沙中土", "沙中土", "沙中土", "沙中土",
+        "天上火", "天上火", "天上火", "天上火", "天上火", "天上火",
+        "石榴木", "石榴木", "石榴木", "石榴木", "石榴木", "石榴木",
+        "大海水", "大海水", "大海水", "大海水", "大海水", "大海水"
     )
 
-    // 纳音五行属性
+    // 纳音五行属性（完整60个）
     private val naYinWuXing = arrayOf(
         "金", "金", "金", "金", "金", "金",
         "火", "火", "火", "火", "火", "火",
@@ -315,7 +335,27 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "水", "水", "水", "水", "水", "水",
         "土", "土", "土", "土", "土", "土",
         "金", "金", "金", "金", "金", "金",
-        "木", "木", "木", "木", "木", "木"
+        "木", "木", "木", "木", "木", "木",
+        "水", "水", "水", "水", "水", "水",
+        "土", "土", "土", "土", "土", "土",
+        "火", "火", "火", "火", "火", "火",
+        "木", "木", "木", "木", "木", "木",
+        "水", "水", "水", "水", "水", "水",
+        "金", "金", "金", "金", "金", "金",
+        "火", "火", "火", "火", "火", "火",
+        "木", "木", "木", "木", "木", "木",
+        "土", "土", "土", "土", "土", "土",
+        "金", "金", "金", "金", "金", "金",
+        "火", "火", "火", "火", "火", "火",
+        "水", "水", "水", "水", "水", "水",
+        "土", "土", "土", "土", "土", "土",
+        "金", "金", "金", "金", "金", "金",
+        "木", "木", "木", "木", "木", "木",
+        "水", "水", "水", "水", "水", "水",
+        "土", "土", "土", "土", "土", "土",
+        "火", "火", "火", "火", "火", "火",
+        "木", "木", "木", "木", "木", "木",
+        "水", "水", "水", "水", "水", "水"
     )
 
     // 天干
@@ -519,7 +559,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         renWaterText.text = "人盘水: ${renPan24[renShuiIndex]}"
 
         // 一百二十分金 (每格3度，共120格)
-        val fenJinIndex = (degree / 3f).toInt() % 120
+        val fenJinIndex = ((degree + 1.5f) / 3f).toInt() % 120
         fenJinText.text = "分金: ${fenJin120[fenJinIndex]}"
         val posInShan = fenJinIndex % 5
         val fenJinGood = posInShan == 0 || posInShan == 2 || posInShan == 4
@@ -534,7 +574,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         // 穿山七十二龙 (每龙5度，共72龙)
-        val chuanShanIndex = (degree / 5f).toInt() % 72
+        val chuanShanIndex = ((degree + 2.5f) / 5f).toInt() % 72
         val chuanShanName = chuanShan72[chuanShanIndex]
         chuanShanText.text = "穿山: $chuanShanName"
         if (chuanShanName == "空亡") {
@@ -548,7 +588,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         // 透地六十龙 (每龙6度，共60龙)
-        val touDiIndex = (degree / 6f).toInt() % 60
+        val touDiIndex = ((degree + 3f) / 6f).toInt() % 60
         val touDiName = touDi60[touDiIndex]
         touDiText.text = "透地: $touDiName"
         val gan = touDiName[0]
@@ -564,7 +604,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         // 十二长生宫 (每宫30度，共12宫)
-        val changShengIndex = (degree / 30f).toInt() % 12
+        val changShengIndex = ((degree + 15f) / 30f).toInt() % 12
         val changShengName = changSheng12[changShengIndex]
         val changShengZhiName = changShengZhi[changShengIndex]
         changShengText.text = "$changShengName: $changShengZhiName"
@@ -671,7 +711,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         baShaStatusText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
 
         // 纳音五行 (每纳音6度)
-        val naYinIndex = (degree / 6f).toInt() % 60
+        val naYinIndex = ((degree + 3f) / 6f).toInt() % 60
         val naYinName = naYin60[naYinIndex]
         val naYinWX = naYinWuXing[naYinIndex]
         naYinText.text = "纳音: $naYinName ($naYinWX)"
@@ -711,16 +751,17 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         val monthGanIndex = ((year - 1984) % 10 * 2 + month + 1) % 10
         val monthZhu = tianGan[monthGanIndex] + diZhi[(month + 1) % 12]
 
-        // 日柱（简化公式）
-        val baseDate = java.util.GregorianCalendar(1900, 0, 31).timeInMillis
+        // 日柱（基准日：1900年1月1日为甲戌日）
+        // 1900-01-01 是甲戌日，天干索引0=甲，地支索引10=戌
+        val baseDate = java.util.GregorianCalendar(1900, 0, 1).timeInMillis
         val currentDate = calendar.timeInMillis
         val diffDays = ((currentDate - baseDate) / (1000 * 60 * 60 * 24)).toInt()
-        val dayGanIndex = diffDays % 10
-        val dayZhiIndex = diffDays % 12
+        val dayGanIndex = (diffDays % 10 + 10) % 10  // 甲=0
+        val dayZhiIndex = (diffDays % 12 + 12) % 12   // 戌=10
         val dayZhu = tianGan[dayGanIndex] + diZhi[dayZhiIndex]
 
-        // 时柱
-        val shiZhiIndex = ((hour + 1) / 2) % 12
+        // 时柱（子时：23:00-01:00）
+        val shiZhiIndex = if (hour == 23) 0 else ((hour + 1) / 2) % 12
         val shiGanIndex = (dayGanIndex * 2 + shiZhiIndex) % 10
         val shiZhu = tianGan[shiGanIndex] + diZhi[shiZhiIndex]
 
