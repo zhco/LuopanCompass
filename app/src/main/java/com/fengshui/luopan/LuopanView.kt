@@ -280,6 +280,34 @@ class LuopanView @JvmOverloads constructor(
         "煞", "煞", "煞", "煞", "煞", "煞", "煞", "煞"
     )
 
+    // 纳音五行（六十甲子纳音，每6度一纳音，共60个）
+    private val naYin60 = arrayOf(
+        "海中金", "海中金", "海中金", "海中金", "海中金", "海中金",
+        "炉中火", "炉中火", "炉中火", "炉中火", "炉中火", "炉中火",
+        "大林木", "大林木", "大林木", "大林木", "大林木", "大林木",
+        "路旁土", "路旁土", "路旁土", "路旁土", "路旁土", "路旁土",
+        "剑锋金", "剑锋金", "剑锋金", "剑锋金", "剑锋金", "剑锋金",
+        "山头火", "山头火", "山头火", "山头火", "山头火", "山头火",
+        "涧下水", "涧下水", "涧下水", "涧下水", "涧下水", "涧下水",
+        "城头土", "城头土", "城头土", "城头土", "城头土", "城头土",
+        "白蜡金", "白蜡金", "白蜡金", "白蜡金", "白蜡金", "白蜡金",
+        "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木"
+    )
+
+    // 纳音五行属性
+    private val naYinWuXing = arrayOf(
+        "金", "金", "金", "金", "金", "金",
+        "火", "火", "火", "火", "火", "火",
+        "木", "木", "木", "木", "木", "木",
+        "土", "土", "土", "土", "土", "土",
+        "金", "金", "金", "金", "金", "金",
+        "火", "火", "火", "火", "火", "火",
+        "水", "水", "水", "水", "水", "水",
+        "土", "土", "土", "土", "土", "土",
+        "金", "金", "金", "金", "金", "金",
+        "木", "木", "木", "木", "木", "木"
+    )
+
     // 当前角度
     var currentDegree: Float = 0f
         set(value) {
@@ -386,26 +414,29 @@ class LuopanView @JvmOverloads constructor(
         // 绘制人盘 (内圈24山，中针)
         draw24ShanRing(canvas, renPan24, radius * 0.63f, radius * 0.52f, 15f, true)
 
+        // 绘制纳音五行
+        drawNaYin(canvas, radius * 0.50f, radius * 0.40f)
+
         // 绘制一百二十分金
-        drawFenJin120(canvas, radius * 0.50f, radius * 0.40f)
+        drawFenJin120(canvas, radius * 0.38f, radius * 0.30f)
 
         // 绘制穿山七十二龙
-        drawChuanShan72(canvas, radius * 0.38f, radius * 0.28f)
+        drawChuanShan72(canvas, radius * 0.28f, radius * 0.20f)
 
         // 绘制透地六十龙
-        drawTouDi60(canvas, radius * 0.26f, radius * 0.18f)
+        drawTouDi60(canvas, radius * 0.18f, radius * 0.12f)
 
         // 绘制十二长生宫
-        drawChangSheng12(canvas, radius * 0.16f, radius * 0.10f)
+        drawChangSheng12(canvas, radius * 0.10f, radius * 0.06f)
 
         // 绘制二十八宿
-        draw28Xiu(canvas, radius * 0.08f, radius * 0.04f)
+        draw28Xiu(canvas, radius * 0.05f, radius * 0.02f)
 
         // 绘制紫白飞星
-        drawZiBai(canvas, radius * 0.035f, radius * 0.01f)
+        drawZiBai(canvas, radius * 0.015f, radius * 0.005f)
 
         // 绘制六十四卦
-        draw64Gua(canvas, radius * 0.008f, radius * 0.001f)
+        draw64Gua(canvas, radius * 0.002f, radius * 0.001f)
 
         // 绘制天池 (中心)
         drawTianChi(canvas)
@@ -1060,6 +1091,67 @@ class LuopanView @JvmOverloads constructor(
 
         paint.strokeWidth = 2f
         paint.color = Color.parseColor("#FF0000")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制纳音五行
+     * 每纳音6度，共60纳音
+     */
+    private fun drawNaYin(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 60f  // 每纳音6度
+
+        for (i in 0 until 60) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 0.5f
+            paint.color = Color.parseColor("#5D4037")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            if (i % 6 == 0) {
+                paint.strokeWidth = 1f
+                paint.color = Color.parseColor("#B8860B")
+                canvas.drawLine(
+                    (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                    (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+                )
+            }
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.2f
+
+            // 根据五行显示颜色
+            textPaint.color = when (naYinWuXing[i]) {
+                "金" -> Color.parseColor("#FFD700")
+                "木" -> Color.parseColor("#90EE90")
+                "水" -> Color.parseColor("#87CEEB")
+                "火" -> Color.parseColor("#FF6B6B")
+                "土" -> Color.parseColor("#DAA520")
+                else -> Color.parseColor("#DAA520")
+            }
+            textPaint.typeface = Typeface.DEFAULT_BOLD
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            // 显示纳音名称（简化显示）
+            val displayText = naYin60[i].substring(0, minOf(3, naYin60[i].length))
+            canvas.drawText(displayText, 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
         canvas.drawCircle(0f, 0f, outerR, paint)
         canvas.drawCircle(0f, 0f, innerR, paint)
     }

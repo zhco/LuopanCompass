@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var locationText: TextView
     private lateinit var magDeclText: TextView
     private lateinit var levelText: TextView
+    private lateinit var naYinText: TextView
     private lateinit var saveButton: Button
     private lateinit var historyButton: Button
 
@@ -289,6 +290,34 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "煞", "煞", "煞", "煞", "煞", "煞", "煞", "煞"
     )
 
+    // 纳音五行（六十甲子纳音）
+    private val naYin60 = arrayOf(
+        "海中金", "海中金", "海中金", "海中金", "海中金", "海中金",
+        "炉中火", "炉中火", "炉中火", "炉中火", "炉中火", "炉中火",
+        "大林木", "大林木", "大林木", "大林木", "大林木", "大林木",
+        "路旁土", "路旁土", "路旁土", "路旁土", "路旁土", "路旁土",
+        "剑锋金", "剑锋金", "剑锋金", "剑锋金", "剑锋金", "剑锋金",
+        "山头火", "山头火", "山头火", "山头火", "山头火", "山头火",
+        "涧下水", "涧下水", "涧下水", "涧下水", "涧下水", "涧下水",
+        "城头土", "城头土", "城头土", "城头土", "城头土", "城头土",
+        "白蜡金", "白蜡金", "白蜡金", "白蜡金", "白蜡金", "白蜡金",
+        "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木", "杨柳木"
+    )
+
+    // 纳音五行属性
+    private val naYinWuXing = arrayOf(
+        "金", "金", "金", "金", "金", "金",
+        "火", "火", "火", "火", "火", "火",
+        "木", "木", "木", "木", "木", "木",
+        "土", "土", "土", "土", "土", "土",
+        "金", "金", "金", "金", "金", "金",
+        "火", "火", "火", "火", "火", "火",
+        "水", "水", "水", "水", "水", "水",
+        "土", "土", "土", "土", "土", "土",
+        "金", "金", "金", "金", "金", "金",
+        "木", "木", "木", "木", "木", "木"
+    )
+
     // 天干
     private val tianGan = arrayOf("甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸")
 
@@ -334,6 +363,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         locationText = findViewById(R.id.locationText)
         magDeclText = findViewById(R.id.magDeclText)
         levelText = findViewById(R.id.levelText)
+        naYinText = findViewById(R.id.naYinText)
         saveButton = findViewById(R.id.saveButton)
         historyButton = findViewById(R.id.historyButton)
 
@@ -638,6 +668,20 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         baShaStatusText.text = "煞"
         baShaText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
         baShaStatusText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+
+        // 纳音五行 (每纳音6度)
+        val naYinIndex = (degree / 6f).toInt() % 60
+        val naYinName = naYin60[naYinIndex]
+        val naYinWX = naYinWuXing[naYinIndex]
+        naYinText.text = "纳音: $naYinName ($naYinWX)"
+        naYinText.setTextColor(android.graphics.Color.parseColor(when (naYinWX) {
+            "金" -> "#FFD700"
+            "木" -> "#90EE90"
+            "水" -> "#87CEEB"
+            "火" -> "#FF6B6B"
+            "土" -> "#DAA520"
+            else -> "#DAA520"
+        }))
 
         // 四柱干支
         val siZhu = calculateSiZhu()

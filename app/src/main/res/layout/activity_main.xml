@@ -456,6 +456,19 @@
 
     </LinearLayout>
 
+    <!-- 纳音五行 -->
+    <TextView
+        android:id="@+id/naYinText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="纳音: 海中金 (金)"
+        android:textColor="#FFD700"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500"
+        android:fontFamily="monospace" />
+
     <!-- 神煞 -->
     <LinearLayout
         android:layout_width="match_parent"
