@@ -25,7 +25,7 @@ cd "$SAVED" >/dev/null
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
@@ -44,14 +44,6 @@ else
     which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH."
 fi
 
-# Increase the maximum file descriptors if we can.
-MAX_FD="maximum"
-case $( ulimit -H -n ) in
-  '' | soft) :;;
-  *)
-    ulimit -n "$MAX_FD" || warn "Could not set maximum file descriptor limit to $MAX_FD"
-esac
-
 # Collect all arguments for the java command
 set -- \
         "-Dorg.gradle.appname=$APP_BASE_NAME" \
@@ -59,4 +51,4 @@ set -- \
         org.gradle.wrapper.GradleWrapperMain \
         "$@"
 
-exec "$JAVACMD" "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" "$@"
+exec "$JAVACMD" $DEFAULT_JVM_OPTS "$@"
