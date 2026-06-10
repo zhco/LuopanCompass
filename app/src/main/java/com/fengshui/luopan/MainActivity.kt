@@ -484,6 +484,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         val shiGanIndex = (dayGanIndex * 2 + shiZhiIndex) % 10
         val shiZhu = tianGan[shiGanIndex] + diZhi[shiZhiIndex]
 
-        return "$yearZhu年 $monthZhu月 $dayZhu日 $shiZhu时"
+        return yearZhu + "年 " + monthZhu + "月 " + dayZhu + "日 " + shiZhu + "时"
     }
 }
