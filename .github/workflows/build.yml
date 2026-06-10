@@ -73,4 +73,4 @@ jobs:
           下载 APK 文件，在手机上安装即可使用。
           需要授予位置权限以获取GPS坐标。
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
