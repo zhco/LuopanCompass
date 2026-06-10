@@ -174,7 +174,7 @@ class LuopanView @JvmOverloads constructor(
 
     // 九星五行属性
     private val jiuXingWuXing = arrayOf(
-        "木", "土", "土", "水", "火", "金", "金", "土", "金"
+        "木", "土", "土", "水", "火", "金", "金", "土", "水"
     )
 
     // 九星吉凶
