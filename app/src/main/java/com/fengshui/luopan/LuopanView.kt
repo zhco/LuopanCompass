@@ -301,7 +301,7 @@ class LuopanView @JvmOverloads constructor(
         canvas.drawCircle(0f, 0f, 3f, centerPaint)
     }
 
-    private fun drawNeedle(canvas) {
+    private fun drawNeedle(canvas: Canvas) {
         val needleLength = radius * 0.30f
 
         // 北指针 (红色)
