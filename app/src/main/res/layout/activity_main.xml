@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:text="风水罗盘"
         android:textColor="@color/gold"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:fontFamily="serif"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
         android:shadowColor="@color/darkGold"
         android:shadowDx="1"
         android:shadowDy="1"
@@ -27,12 +27,13 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- 角度和方位 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:padding="12dp"
+        android:padding="8dp"
         android:background="#2A1500">
 
         <TextView
@@ -42,7 +43,7 @@
             android:layout_weight="1"
             android:text="0.0°"
             android:textColor="@color/gold"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:gravity="center"
             android:fontFamily="monospace" />
 
@@ -53,18 +54,19 @@
             android:layout_weight="1"
             android:text="北"
             android:textColor="@color/gold"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:gravity="center"
             android:fontFamily="serif" />
 
     </LinearLayout>
 
+    <!-- 地盘坐山朝向 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:padding="8dp"
+        android:padding="6dp"
         android:background="#2A1500">
 
         <TextView
@@ -72,9 +74,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="山: 壬"
+            android:text="地盘山: 壬"
             android:textColor="@color/cream"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:gravity="center"
             android:fontFamily="serif" />
 
@@ -83,9 +85,75 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="水: 丙"
+            android:text="地盘水: 丙"
             android:textColor="@color/cream"
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 人盘坐山朝向 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="6dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/renMountainText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="人盘山: 子"
+            android:textColor="#DAA520"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+        <TextView
+            android:id="@+id/renWaterText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="人盘水: 午"
+            android:textColor="#DAA520"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 一百二十分金 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="6dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/fenJinText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="分金: 甲子"
+            android:textColor="#90EE90"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/fenJinStatusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="吉"
+            android:textColor="#90EE90"
+            android:textSize="12sp"
             android:gravity="center"
             android:fontFamily="serif" />
 
@@ -97,9 +165,9 @@
         android:layout_height="wrap_content"
         android:text="定位中..."
         android:textColor="@color/darkGold"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:gravity="center"
-        android:paddingBottom="8dp"
+        android:paddingBottom="6dp"
         android:fontFamily="monospace" />
 
 </LinearLayout>

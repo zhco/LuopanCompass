@@ -16,8 +16,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlin.math.atan2
-import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
@@ -26,6 +24,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var directionText: TextView
     private lateinit var mountainText: TextView
     private lateinit var waterText: TextView
+    private lateinit var renMountainText: TextView
+    private lateinit var renWaterText: TextView
+    private lateinit var fenJinText: TextView
+    private lateinit var fenJinStatusText: TextView
     private lateinit var locationText: TextView
 
     private lateinit var sensorManager: SensorManager
@@ -40,12 +42,48 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var currentDegree = 0f
     private var smoothDegree = 0f
 
-    // 二十四山
+    // 二十四山 - 地盘/天盘
     private val shan24 = arrayOf(
         "壬", "子", "癸", "丑", "艮", "寅",
         "甲", "卯", "乙", "辰", "巽", "巳",
         "丙", "午", "丁", "未", "坤", "申",
         "庚", "酉", "辛", "戌", "乾", "亥"
+    )
+
+    // 人盘二十四山 (中针，与地盘偏移7.5度)
+    private val renPan24 = arrayOf(
+        "子", "癸", "丑", "艮", "寅", "甲",
+        "卯", "乙", "辰", "巽", "巳", "丙",
+        "午", "丁", "未", "坤", "申", "庚",
+        "酉", "辛", "戌", "乾", "亥", "壬"
+    )
+
+    // 一百二十分金
+    private val fenJin120 = arrayOf(
+        "甲子", "丙子", "戊子", "庚子", "壬子",
+        "甲子", "丙子", "戊子", "庚子", "壬子",
+        "乙丑", "丁丑", "己丑", "辛丑", "癸丑",
+        "丙寅", "戊寅", "庚寅", "壬寅", "甲寅",
+        "丙寅", "戊寅", "庚寅", "壬寅", "甲寅",
+        "丙寅", "戊寅", "庚寅", "壬寅", "甲寅",
+        "丁卯", "己卯", "辛卯", "癸卯", "乙卯",
+        "丁卯", "己卯", "辛卯", "癸卯", "乙卯",
+        "戊辰", "庚辰", "壬辰", "甲辰", "丙辰",
+        "戊辰", "庚辰", "壬辰", "甲辰", "丙辰",
+        "己巳", "辛巳", "癸巳", "乙巳", "丁巳",
+        "己巳", "辛巳", "癸巳", "乙巳", "丁巳",
+        "庚午", "壬午", "甲午", "丙午", "戊午",
+        "庚午", "壬午", "甲午", "丙午", "戊午",
+        "辛未", "癸未", "乙未", "丁未", "己未",
+        "辛未", "癸未", "乙未", "丁未", "己未",
+        "壬申", "甲申", "丙申", "戊申", "庚申",
+        "壬申", "甲申", "丙申", "戊申", "庚申",
+        "癸酉", "乙酉", "丁酉", "己酉", "辛酉",
+        "癸酉", "乙酉", "丁酉", "己酉", "辛酉",
+        "甲戌", "丙戌", "戊戌", "庚戌", "壬戌",
+        "甲戌", "丙戌", "戊戌", "庚戌", "壬戌",
+        "乙亥", "丁亥", "己亥", "辛亥", "癸亥",
+        "乙亥", "丁亥", "己亥", "辛亥", "癸亥"
     )
 
     // 方位名称
@@ -61,6 +99,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         directionText = findViewById(R.id.directionText)
         mountainText = findViewById(R.id.mountainText)
         waterText = findViewById(R.id.waterText)
+        renMountainText = findViewById(R.id.renMountainText)
+        renWaterText = findViewById(R.id.renWaterText)
+        fenJinText = findViewById(R.id.fenJinText)
+        fenJinStatusText = findViewById(R.id.fenJinStatusText)
         locationText = findViewById(R.id.locationText)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -71,7 +113,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             Toast.makeText(this, R.string.no_sensor, Toast.LENGTH_LONG).show()
         }
 
-        // 请求位置权限
         requestLocationPermission()
     }
 
@@ -145,11 +186,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 var degree = Math.toDegrees(orientationValues[0].toDouble()).toFloat()
                 if (degree < 0) degree += 360f
 
-                // 平滑处理
                 smoothDegree = smoothDegree * 0.85f + degree * 0.15f
                 currentDegree = smoothDegree
 
-                // 更新UI
                 updateUI(currentDegree)
             }
         }
@@ -162,20 +201,40 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun updateUI(degree: Float) {
-        // 更新罗盘视图
         luopanView.currentDegree = degree
 
-        // 更新角度显示
+        // 角度和方位
         degreeText.text = getString(R.string.degree_format, degree)
-
-        // 更新方位
         val directionIndex = ((degree + 11.25f) / 22.5f).toInt() % 16
         directionText.text = directions[directionIndex]
 
-        // 更新山/水 (坐山朝向)
-        val shanIndex = ((degree + 7.5f) / 15f).toInt() % 24
-        val shuiIndex = (shanIndex + 12) % 24
-        mountainText.text = "山: ${shan24[shanIndex]}"
-        waterText.text = "水: ${shan24[shuiIndex]}"
+        // 地盘坐山朝向 (偏移7.5度)
+        val diShanIndex = ((degree + 7.5f) / 15f).toInt() % 24
+        val diShuiIndex = (diShanIndex + 12) % 24
+        mountainText.text = "地盘山: ${shan24[diShanIndex]}"
+        waterText.text = "地盘水: ${shan24[diShuiIndex]}"
+
+        // 人盘坐山朝向 (中针，偏移15度)
+        val renShanIndex = ((degree + 15f) / 15f).toInt() % 24
+        val renShuiIndex = (renShanIndex + 12) % 24
+        renMountainText.text = "人盘山: ${renPan24[renShanIndex]}"
+        renWaterText.text = "人盘水: ${renPan24[renShuiIndex]}"
+
+        // 一百二十分金 (每格3度，共120格)
+        val fenJinIndex = (degree / 3f).toInt() % 120
+        fenJinText.text = "分金: ${fenJin120[fenJinIndex]}"
+
+        // 分金吉凶判断
+        val posInShan = fenJinIndex % 5
+        val isGood = posInShan == 0 || posInShan == 2 || posInShan == 4
+        if (isGood) {
+            fenJinStatusText.text = "吉"
+            fenJinStatusText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+            fenJinText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+        } else {
+            fenJinStatusText.text = "凶"
+            fenJinStatusText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
+            fenJinText.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
+        }
     }
 }
