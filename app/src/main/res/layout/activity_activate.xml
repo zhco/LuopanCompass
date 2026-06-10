@@ -78,6 +78,17 @@
         android:textSize="14sp"
         android:layout_marginBottom="8dp" />
 
+    <Button
+        android:id="@+id/getAuthCodeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="如何获取激活码？"
+        android:textColor="@color/gold"
+        android:backgroundTint="#2E7D32"
+        android:padding="10dp"
+        android:textSize="13sp"
+        android:layout_marginBottom="12dp" />
+
     <EditText
         android:id="@+id/licenseInput"
         android:layout_width="match_parent"

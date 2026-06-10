@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
@@ -25,6 +26,7 @@ class ActivateActivity : AppCompatActivity() {
     private lateinit var activateButton: Button
     private lateinit var trialButton: Button
     private lateinit var copyDeviceIdButton: Button
+    private lateinit var getAuthCodeButton: Button
     private lateinit var remainingTrialsText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +51,7 @@ class ActivateActivity : AppCompatActivity() {
         activateButton = findViewById(R.id.activateButton)
         trialButton = findViewById(R.id.trialButton)
         copyDeviceIdButton = findViewById(R.id.copyDeviceIdButton)
+        getAuthCodeButton = findViewById(R.id.getAuthCodeButton)
         remainingTrialsText = findViewById(R.id.remainingTrialsText)
 
         // 只显示设备码（Android ID），不显示授权码
@@ -62,6 +65,13 @@ class ActivateActivity : AppCompatActivity() {
             val clip = ClipData.newPlainText("设备码", deviceId)
             clipboard.setPrimaryClip(clip)
             Toast.makeText(this, "设备码已复制到剪贴板", Toast.LENGTH_SHORT).show()
+        }
+
+        // 获取激活码按钮 - 打开网页
+        getAuthCodeButton.setOnClickListener {
+            val url = "https://zhco.github.io/auth.html"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
 
         // 激活按钮
