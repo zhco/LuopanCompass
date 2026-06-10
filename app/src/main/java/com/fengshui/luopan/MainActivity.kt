@@ -2,6 +2,7 @@ package com.fengshui.luopan
 
 import android.Manifest
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -11,8 +12,10 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -49,10 +52,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var baShaStatusText: TextView
     private lateinit var siZhuText: TextView
     private lateinit var locationText: TextView
+    private lateinit var magDeclText: TextView
+    private lateinit var levelText: TextView
+    private lateinit var saveButton: Button
+    private lateinit var historyButton: Button
 
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var magnetometer: Sensor? = null
+    private var gyroscope: Sensor? = null
 
     private val gravityValues = FloatArray(3)
     private val geomagneticValues = FloatArray(3)
@@ -61,6 +69,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private var currentDegree = 0f
     private var smoothDegree = 0f
+    private var magDeclination = 0f
+    private var isMagDeclEnabled = false
+
+    private lateinit var sharedPrefs: SharedPreferences
+    private val PREFS_NAME = "luopan_records"
+    private val RECORDS_KEY = "records"
 
     // 二十四山 - 地盘/天盘
     private val shan24 = arrayOf(
@@ -318,13 +332,35 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         baShaStatusText = findViewById(R.id.baShaStatusText)
         siZhuText = findViewById(R.id.siZhuText)
         locationText = findViewById(R.id.locationText)
+        magDeclText = findViewById(R.id.magDeclText)
+        levelText = findViewById(R.id.levelText)
+        saveButton = findViewById(R.id.saveButton)
+        historyButton = findViewById(R.id.historyButton)
+
+        sharedPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
         if (accelerometer == null || magnetometer == null) {
             Toast.makeText(this, R.string.no_sensor, Toast.LENGTH_LONG).show()
+        }
+
+        // 磁偏角校正点击
+        magDeclText.setOnClickListener {
+            showMagDeclDialog()
+        }
+
+        // 保存记录按钮
+        saveButton.setOnClickListener {
+            saveCurrentRecord()
+        }
+
+        // 历史记录按钮
+        historyButton.setOnClickListener {
+            showHistoryDialog()
         }
 
         requestLocationPermission()
@@ -371,6 +407,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         super.onResume()
         accelerometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
         magnetometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
+        gyroscope?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
     }
 
     override fun onPause() {
@@ -383,6 +420,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             Sensor.TYPE_ACCELEROMETER -> {
                 System.arraycopy(event.values, 0, gravityValues, 0, 3)
                 hasGravity = true
+
+                // 水平仪检测
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+                val pitch = Math.toDegrees(Math.atan2(x.toDouble(), Math.sqrt((y * y + z * z).toDouble()))).toFloat()
+                val roll = Math.toDegrees(Math.atan2(y.toDouble(), Math.sqrt((x * x + z * z).toDouble()))).toFloat()
+                val isLevel = Math.abs(pitch) < 2 && Math.abs(roll) < 2
+                levelText.text = if (isLevel) "水平: 正常" else "水平: 倾斜 %.1f° %.1f°".format(Math.abs(pitch), Math.abs(roll))
+                levelText.setTextColor(android.graphics.Color.parseColor(if (isLevel) "#90EE90" else "#FF6B6B"))
             }
             Sensor.TYPE_MAGNETIC_FIELD -> {
                 System.arraycopy(event.values, 0, geomagneticValues, 0, 3)
@@ -399,6 +446,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 SensorManager.getOrientation(rotationMatrix, orientationValues)
                 var degree = Math.toDegrees(orientationValues[0].toDouble()).toFloat()
                 if (degree < 0) degree += 360f
+
+                // 应用磁偏角校正
+                if (isMagDeclEnabled) {
+                    degree += magDeclination
+                    if (degree >= 360f) degree -= 360f
+                    if (degree < 0) degree += 360f
+                }
 
                 smoothDegree = smoothDegree * 0.85f + degree * 0.15f
                 currentDegree = smoothDegree
@@ -626,5 +680,84 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         val shiZhu = tianGan[shiGanIndex] + diZhi[shiZhiIndex]
 
         return yearZhu + "年 " + monthZhu + "月 " + dayZhu + "日 " + shiZhu + "时"
+    }
+
+    /**
+     * 显示磁偏角设置对话框
+     */
+    private fun showMagDeclDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("磁偏角校正")
+
+        val input = android.widget.EditText(this)
+        input.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        input.hint = "输入磁偏角度数（如：-5.2）"
+        input.setText(magDeclination.toString())
+        builder.setView(input)
+
+        builder.setPositiveButton("确定") { _, _ ->
+            val value = input.text.toString().toFloatOrNull() ?: 0f
+            magDeclination = value
+            isMagDeclEnabled = true
+            magDeclText.text = "磁偏角: %.1f°".format(magDeclination)
+            magDeclText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+        }
+        builder.setNegativeButton("取消", null)
+        builder.setNeutralButton("关闭校正") { _, _ ->
+            isMagDeclEnabled = false
+            magDeclText.text = "磁偏角: 未校正"
+            magDeclText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+        }
+        builder.show()
+    }
+
+    /**
+     * 保存当前测量记录
+     */
+    private fun saveCurrentRecord() {
+        val calendar = Calendar.getInstance()
+        val timeStr = "%04d-%02d-%02d %02d:%02d:%02d".format(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DAY_OF_MONTH),
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            calendar.get(Calendar.SECOND)
+        )
+
+        val record = "$timeStr | 方位: %.1f° | 山向: ${mountainText.text} | ${renMountainText.text}".format(currentDegree)
+
+        val records = sharedPrefs.getString(RECORDS_KEY, "") ?: ""
+        val newRecords = record + "\n" + records
+
+        sharedPrefs.edit().putString(RECORDS_KEY, newRecords).apply()
+        Toast.makeText(this, "记录已保存", Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     * 显示历史记录对话框
+     */
+    private fun showHistoryDialog() {
+        val records = sharedPrefs.getString(RECORDS_KEY, "")
+        val displayText = if (records.isNullOrEmpty()) "暂无记录" else records
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("测量记录")
+
+        val scrollView = android.widget.ScrollView(this)
+        val textView = TextView(this)
+        textView.text = displayText
+        textView.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+        textView.textSize = 12f
+        textView.setPadding(20, 20, 20, 20)
+        scrollView.addView(textView)
+        builder.setView(scrollView)
+
+        builder.setPositiveButton("关闭", null)
+        builder.setNegativeButton("清空") { _, _ ->
+            sharedPrefs.edit().remove(RECORDS_KEY).apply()
+            Toast.makeText(this, "记录已清空", Toast.LENGTH_SHORT).show()
+        }
+        builder.show()
     }
 }

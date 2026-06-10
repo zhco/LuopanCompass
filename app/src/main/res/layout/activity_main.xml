@@ -27,6 +27,72 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- 磁偏角和水平仪 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/magDeclText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="磁偏角: 未校正"
+            android:textColor="#DAA520"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/levelText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="水平: 正常"
+            android:textColor="#90EE90"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+    </LinearLayout>
+
+    <!-- 保存和历史按钮 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="保存记录"
+            android:textSize="11sp"
+            android:backgroundTint="#B8860B"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/historyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="历史记录"
+            android:textSize="11sp"
+            android:backgroundTint="#5D4037"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
     <!-- 角度和方位 -->
     <LinearLayout
         android:layout_width="match_parent"
