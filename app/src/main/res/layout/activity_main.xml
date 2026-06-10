@@ -324,6 +324,72 @@
 
     </LinearLayout>
 
+    <!-- 紫白飞星 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/ziBaiText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="紫白: 一白 (水)"
+            android:textColor="#90EE90"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/ziBaiStatusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="吉"
+            android:textColor="#90EE90"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 六十四卦 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/gua64Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="六十四卦: 乾"
+            android:textColor="#87CEEB"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/gua64XiangText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="乾为天"
+            android:textColor="#87CEEB"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
     <!-- 四柱干支 -->
     <TextView
         android:id="@+id/siZhuText"

@@ -179,6 +179,46 @@ class LuopanView @JvmOverloads constructor(
         "吉", "凶", "凶", "凶", "凶", "吉", "凶", "吉", "吉"
     )
 
+    // 紫白飞星（一白到九紫，按洛书九宫排列）
+    // 每星40度（360/9）
+    private val ziBai = arrayOf(
+        "一白", "二黑", "三碧", "四绿", "五黄", "六白", "七赤", "八白", "九紫"
+    )
+
+    // 紫白飞星五行
+    private val ziBaiWuXing = arrayOf(
+        "水", "土", "木", "木", "土", "金", "金", "土", "火"
+    )
+
+    // 紫白飞星吉凶
+    private val ziBaiJiXiong = arrayOf(
+        "吉", "凶", "凶", "吉", "大凶", "吉", "凶", "吉", "吉"
+    )
+
+    // 六十四卦（按先天八卦顺序，每卦5.625度）
+    private val gua64 = arrayOf(
+        "乾", "坤", "屯", "蒙", "需", "讼", "师", "比",
+        "小畜", "履", "泰", "否", "同人", "大有", "谦", "豫",
+        "随", "蛊", "临", "观", "噬嗑", "贲", "剥", "复",
+        "无妄", "大畜", "颐", "大过", "坎", "离", "咸", "恒",
+        "遁", "大壮", "晋", "明夷", "家人", "睽", "蹇", "解",
+        "损", "益", "夬", "姤", "萃", "升", "困", "井",
+        "革", "鼎", "震", "艮", "渐", "归妹", "丰", "旅",
+        "巽", "兑", "涣", "节", "中孚", "小过", "既济", "未济"
+    )
+
+    // 六十四卦卦象（上卦+下卦）
+    private val gua64Xiang = arrayOf(
+        "乾为天", "坤为地", "水雷屯", "山水蒙", "水天需", "天水讼", "地水师", "水地比",
+        "风天小畜", "天泽履", "地天泰", "天地否", "天火同人", "火天大有", "地山谦", "雷地豫",
+        "泽雷随", "山风蛊", "地泽临", "风地观", "火雷噬嗑", "山火贲", "山地剥", "地雷复",
+        "天雷无妄", "山天大畜", "山雷颐", "泽风大过", "坎为水", "离为火", "泽山咸", "雷风恒",
+        "天山遁", "雷天大壮", "火地晋", "地火明夷", "风火家人", "火泽睽", "水山蹇", "雷水解",
+        "山泽损", "风雷益", "泽天夬", "天风姤", "泽地萃", "地风升", "泽水困", "水风井",
+        "泽火革", "火风鼎", "震为雷", "艮为山", "风山渐", "雷泽归妹", "雷火丰", "火山旅",
+        "巽为风", "兑为泽", "风水涣", "水泽节", "风泽中孚", "雷山小过", "水火既济", "火水未济"
+    )
+
     // 一百二十分金吉凶判断
     private fun isFenJinGood(index: Int): Boolean {
         val posInShan = index % 5
@@ -291,8 +331,11 @@ class LuopanView @JvmOverloads constructor(
         // 绘制二十八宿
         draw28Xiu(canvas, radius * 0.08f, radius * 0.04f)
 
-        // 绘制九星
-        drawJiuXing(canvas, radius * 0.035f, radius * 0.01f)
+        // 绘制紫白飞星
+        drawZiBai(canvas, radius * 0.035f, radius * 0.01f)
+
+        // 绘制六十四卦
+        draw64Gua(canvas, radius * 0.008f, radius * 0.001f)
 
         // 绘制天池 (中心)
         drawTianChi(canvas)
@@ -745,6 +788,115 @@ class LuopanView @JvmOverloads constructor(
             // 显示九星名称（简化显示）
             val displayText = jiuXing[i].substring(0, minOf(2, jiuXing[i].length))
             canvas.drawText(displayText, 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制紫白飞星
+     * 每星40度，共9星
+     */
+    private fun drawZiBai(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 9f  // 每星40度
+
+        for (i in 0 until 9) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 1f
+            paint.color = Color.parseColor("#B8860B")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.4f
+
+            // 根据吉凶显示颜色
+            textPaint.color = when (ziBaiJiXiong[i]) {
+                "吉" -> Color.parseColor("#90EE90")    // 吉 - 浅绿
+                "大凶" -> Color.parseColor("#FF0000")  // 大凶 - 红
+                else -> Color.parseColor("#DAA520")    // 凶 - 金色
+            }
+            textPaint.typeface = Typeface.DEFAULT_BOLD
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            canvas.drawText(ziBai[i], 0f, 0f, textPaint)
+            canvas.restore()
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制六十四卦
+     * 每卦5.625度，共64卦
+     */
+    private fun draw64Gua(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 64f  // 每卦5.625度
+
+        for (i in 0 until 64) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 0.5f
+            paint.color = Color.parseColor("#5D4037")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            // 每8卦画一条粗线
+            if (i % 8 == 0) {
+                paint.strokeWidth = 1f
+                paint.color = Color.parseColor("#B8860B")
+                canvas.drawLine(
+                    (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                    (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+                )
+            }
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.35f
+
+            // 八卦颜色区分
+            textPaint.color = when {
+                i < 8 -> Color.parseColor("#90EE90")    // 乾宫 - 绿
+                i < 16 -> Color.parseColor("#87CEEB")   // 兑宫 - 蓝
+                i < 24 -> Color.parseColor("#FFD700")   // 离宫 - 金
+                i < 32 -> Color.parseColor("#FF6B6B")   // 震宫 - 红
+                i < 40 -> Color.parseColor("#DDA0DD")   // 巽宫 - 紫
+                i < 48 -> Color.parseColor("#F0E68C")   // 坎宫 - 黄
+                i < 56 -> Color.parseColor("#FFA500")   // 艮宫 - 橙
+                else -> Color.parseColor("#98FB98")     // 坤宫 - 浅绿
+            }
+            textPaint.typeface = Typeface.DEFAULT_BOLD
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            canvas.drawText(gua64[i], 0f, 0f, textPaint)
             canvas.restore()
         }
 

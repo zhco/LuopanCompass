@@ -39,6 +39,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var xiu28XiangText: TextView
     private lateinit var jiuXingText: TextView
     private lateinit var jiuXingWuXingText: TextView
+    private lateinit var ziBaiText: TextView
+    private lateinit var ziBaiStatusText: TextView
+    private lateinit var gua64Text: TextView
+    private lateinit var gua64XiangText: TextView
     private lateinit var siZhuText: TextView
     private lateinit var locationText: TextView
 
@@ -202,6 +206,45 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "吉", "凶", "凶", "凶", "凶", "吉", "凶", "吉", "吉"
     )
 
+    // 紫白飞星
+    private val ziBai = arrayOf(
+        "一白", "二黑", "三碧", "四绿", "五黄", "六白", "七赤", "八白", "九紫"
+    )
+
+    // 紫白飞星五行
+    private val ziBaiWuXing = arrayOf(
+        "水", "土", "木", "木", "土", "金", "金", "土", "火"
+    )
+
+    // 紫白飞星吉凶
+    private val ziBaiJiXiong = arrayOf(
+        "吉", "凶", "凶", "吉", "大凶", "吉", "凶", "吉", "吉"
+    )
+
+    // 六十四卦
+    private val gua64 = arrayOf(
+        "乾", "坤", "屯", "蒙", "需", "讼", "师", "比",
+        "小畜", "履", "泰", "否", "同人", "大有", "谦", "豫",
+        "随", "蛊", "临", "观", "噬嗑", "贲", "剥", "复",
+        "无妄", "大畜", "颐", "大过", "坎", "离", "咸", "恒",
+        "遁", "大壮", "晋", "明夷", "家人", "睽", "蹇", "解",
+        "损", "益", "夬", "姤", "萃", "升", "困", "井",
+        "革", "鼎", "震", "艮", "渐", "归妹", "丰", "旅",
+        "巽", "兑", "涣", "节", "中孚", "小过", "既济", "未济"
+    )
+
+    // 六十四卦卦象
+    private val gua64Xiang = arrayOf(
+        "乾为天", "坤为地", "水雷屯", "山水蒙", "水天需", "天水讼", "地水师", "水地比",
+        "风天小畜", "天泽履", "地天泰", "天地否", "天火同人", "火天大有", "地山谦", "雷地豫",
+        "泽雷随", "山风蛊", "地泽临", "风地观", "火雷噬嗑", "山火贲", "山地剥", "地雷复",
+        "天雷无妄", "山天大畜", "山雷颐", "泽风大过", "坎为水", "离为火", "泽山咸", "雷风恒",
+        "天山遁", "雷天大壮", "火地晋", "地火明夷", "风火家人", "火泽睽", "水山蹇", "雷水解",
+        "山泽损", "风雷益", "泽天夬", "天风姤", "泽地萃", "地风升", "泽水困", "水风井",
+        "泽火革", "火风鼎", "震为雷", "艮为山", "风山渐", "雷泽归妹", "雷火丰", "火山旅",
+        "巽为风", "兑为泽", "风水涣", "水泽节", "风泽中孚", "雷山小过", "水火既济", "火水未济"
+    )
+
     // 天干
     private val tianGan = arrayOf("甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸")
 
@@ -235,6 +278,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         xiu28XiangText = findViewById(R.id.xiu28XiangText)
         jiuXingText = findViewById(R.id.jiuXingText)
         jiuXingWuXingText = findViewById(R.id.jiuXingWuXingText)
+        ziBaiText = findViewById(R.id.ziBaiText)
+        ziBaiStatusText = findViewById(R.id.ziBaiStatusText)
+        gua64Text = findViewById(R.id.gua64Text)
+        gua64XiangText = findViewById(R.id.gua64XiangText)
         siZhuText = findViewById(R.id.siZhuText)
         locationText = findViewById(R.id.locationText)
 
@@ -443,6 +490,37 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             jiuXingText.setTextColor(android.graphics.Color.parseColor("#8B4513"))
             jiuXingWuXingText.setTextColor(android.graphics.Color.parseColor("#8B4513"))
         }
+
+        // 紫白飞星 (每星40度)
+        val ziBaiIndex = (degree / 40f).toInt() % 9
+        val ziBaiName = ziBai[ziBaiIndex]
+        val ziBaiWX = ziBaiWuXing[ziBaiIndex]
+        val ziBaiJX = ziBaiJiXiong[ziBaiIndex]
+        ziBaiText.text = "紫白: $ziBaiName ($ziBaiWX)"
+        ziBaiStatusText.text = ziBaiJX
+        when (ziBaiJX) {
+            "吉" -> {
+                ziBaiText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+                ziBaiStatusText.setTextColor(android.graphics.Color.parseColor("#90EE90"))
+            }
+            "大凶" -> {
+                ziBaiText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+                ziBaiStatusText.setTextColor(android.graphics.Color.parseColor("#FF0000"))
+            }
+            else -> {
+                ziBaiText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+                ziBaiStatusText.setTextColor(android.graphics.Color.parseColor("#DAA520"))
+            }
+        }
+
+        // 六十四卦 (每卦5.625度)
+        val guaIndex = (degree / 5.625f).toInt() % 64
+        val guaName = gua64[guaIndex]
+        val guaXiangName = gua64Xiang[guaIndex]
+        gua64Text.text = "六十四卦: $guaName"
+        gua64XiangText.text = guaXiangName
+        gua64Text.setTextColor(android.graphics.Color.parseColor("#87CEEB"))
+        gua64XiangText.setTextColor(android.graphics.Color.parseColor("#87CEEB"))
 
         // 四柱干支
         val siZhu = calculateSiZhu()
