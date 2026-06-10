@@ -901,12 +901,13 @@ class LuopanView @JvmOverloads constructor(
     /**
      * 绘制紫白飞星
      * 每星40度，共9星
+     * 一白从坎卦(0°)开始
      */
     private fun drawZiBai(canvas: Canvas, outerR: Float, innerR: Float) {
         val step = 360f / 9f  // 每星40度
 
         for (i in 0 until 9) {
-            val startAngle = i * step - currentDegree - step / 2
+            val startAngle = i * step - currentDegree - step / 2 + 20f
 
             paint.strokeWidth = 1f
             paint.color = Color.parseColor("#B8860B")
@@ -953,7 +954,7 @@ class LuopanView @JvmOverloads constructor(
         val step = 360f / 64f  // 每卦5.625度
 
         for (i in 0 until 64) {
-            val startAngle = i * step - currentDegree - step / 2
+            val startAngle = i * step - currentDegree - step / 2 + 2.8125f
 
             paint.strokeWidth = 0.5f
             paint.color = Color.parseColor("#5D4037")

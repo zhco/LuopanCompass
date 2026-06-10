@@ -610,7 +610,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         // 紫白飞星 (每星40度)
-        val ziBaiIndex = (degree / 40f).toInt() % 9
+        // 一白从坎卦(0°)开始，每星40度
+        val ziBaiIndex = ((degree + 20f) / 40f).toInt() % 9
         val ziBaiName = ziBai[ziBaiIndex]
         val ziBaiWX = ziBaiWuXing[ziBaiIndex]
         val ziBaiJX = ziBaiJiXiong[ziBaiIndex]
@@ -632,7 +633,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         // 六十四卦 (每卦5.625度)
-        val guaIndex = (degree / 5.625f).toInt() % 64
+        val guaIndex = ((degree + 2.8125f) / 5.625f).toInt() % 64
         val guaName = gua64[guaIndex]
         val guaXiangName = gua64Xiang[guaIndex]
         gua64Text.text = "六十四卦: $guaName"
