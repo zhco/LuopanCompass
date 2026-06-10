@@ -7,6 +7,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,11 +40,16 @@ jobs:
     - name: Build Release APK
       run: ./gradlew assembleRelease
 
+    - name: Find APK path
+      run: |
+        find app/build/outputs/apk -name "*.apk" -type f
+        ls -la app/build/outputs/apk/release/
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: LuopanCompass-release
-        path: app/build/outputs/apk/release/app-release.apk
+        path: app/build/outputs/apk/release/*.apk
         retention-days: 30
 
     - name: Create Release
@@ -49,17 +58,17 @@ jobs:
       with:
         tag_name: v1.0.${{ github.run_number }}
         name: 风水罗盘 v1.0.${{ github.run_number }}
-        files: app/build/outputs/apk/release/app-release.apk
+        files: app/build/outputs/apk/release/*.apk
         body: |
           ## 风水罗盘 APK
-          
+
           ### 功能特性
-          - 🧭 真实指南针传感器驱动
-          - 🏔️ 二十四山天盘/地盘显示
-          - ☯️ 八卦方位标识
-          - 📍 GPS定位显示
-          - 🎨 传统风水罗盘风格
-          
+          - 真实指南针传感器驱动
+          - 二十四山天盘/地盘显示
+          - 八卦方位标识
+          - GPS定位显示
+          - 传统风水罗盘风格
+
           ### 安装说明
           下载 APK 文件，在手机上安装即可使用。
           需要授予位置权限以获取GPS坐标。
