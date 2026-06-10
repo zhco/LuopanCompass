@@ -6,4 +6,20 @@
     <string name="no_sensor">此设备不支持罗盘功能</string>
     <string name="calibrate_hint">请将手机画8字校准传感器</string>
     <string name="mountain_water" formatted="false">山:%s 水:%s</string>
+    <string name="activate_title">软件激活</string>
+    <string name="device_license">设备授权码</string>
+    <string name="copy_license">复制授权码</string>
+    <string name="enter_license">请输入授权码激活</string>
+    <string name="activate_now">立即激活</string>
+    <string name="free_trial">免费试用</string>
+    <string name="remaining_trials">剩余试用次数: %1$d / %2$d</string>
+    <string name="license_copied">授权码已复制到剪贴板</string>
+    <string name="activate_success">激活成功！</string>
+    <string name="activate_error">授权码无效</string>
+    <string name="activate_error_msg">您输入的授权码不正确。请确认授权码与设备匹配，或联系管理员获取正确的授权码。</string>
+    <string name="trial_used_up">试用次数已用完</string>
+    <string name="trial_used_up_msg">您的免费试用次数已用完，请输入授权码激活应用。</string>
+    <string name="trial_started">试用模式启动，剩余 %d 次</string>
+    <string name="please_activate">请先激活或试用应用</string>
+    <string name="trial_info">激活后永久使用，试用次数有限</string>
 </resources>

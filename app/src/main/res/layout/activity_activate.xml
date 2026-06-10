@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bgColor"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="风水罗盘"
+        android:textColor="@color/gold"
+        android:textSize="28sp"
+        android:fontFamily="serif"
+        android:layout_marginBottom="8dp"
+        android:shadowColor="@color/darkGold"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="软件激活"
+        android:textColor="@color/darkGold"
+        android:textSize="16sp"
+        android:fontFamily="serif"
+        android:layout_marginBottom="32dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#2A1500"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="您的设备授权码"
+            android:textColor="@color/darkGold"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/deviceIdText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="XXXX-XXXX-XXXX-XXXX"
+            android:textColor="@color/gold"
+            android:textSize="16sp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="#1A0A00"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/copyDeviceIdButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="复制授权码"
+            android:textColor="@color/gold"
+            android:backgroundTint="#3E2723"
+            android:layout_gravity="center"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请输入授权码激活"
+        android:textColor="@color/darkGold"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/licenseInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="XXXX-XXXX-XXXX-XXXX"
+        android:textColor="@color/gold"
+        android:textColorHint="#666666"
+        android:background="#2A1500"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:inputType="textCapCharacters|textNoSuggestions"
+        android:maxLength="19"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/activateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="立即激活"
+        android:textColor="@color/white"
+        android:backgroundTint="#8B0000"
+        android:padding="14dp"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/remainingTrialsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="剩余试用次数: 3 / 3"
+        android:textColor="@color/darkGold"
+        android:textSize="13sp"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/trialButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="免费试用"
+        android:textColor="@color/gold"
+        android:backgroundTint="#3E2723"
+        android:padding="12dp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="激活后永久使用，试用次数有限"
+        android:textColor="#666666"
+        android:textSize="11sp"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+
+</LinearLayout>
