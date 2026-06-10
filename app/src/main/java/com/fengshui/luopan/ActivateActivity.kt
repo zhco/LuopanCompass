@@ -53,7 +53,7 @@ class ActivateActivity : AppCompatActivity() {
 
         // 只显示设备码（Android ID），不显示授权码
         // 用户需要把设备码发给管理员，由管理员生成授权码
-        val deviceId = getDeviceId()
+        val deviceId = fetchDeviceId()
         deviceIdText.text = "设备码:\n$deviceId"
 
         // 复制设备码按钮
@@ -135,7 +135,7 @@ class ActivateActivity : AppCompatActivity() {
     /**
      * 获取设备唯一标识（Android ID）
      */
-    private fun getDeviceId(): String {
+    private fun fetchDeviceId(): String {
         return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
             ?: "未知设备"
     }
