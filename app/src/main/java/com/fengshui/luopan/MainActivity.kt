@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
@@ -36,6 +37,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var changShengStatusText: TextView
     private lateinit var xiu28Text: TextView
     private lateinit var xiu28XiangText: TextView
+    private lateinit var jiuXingText: TextView
+    private lateinit var jiuXingWuXingText: TextView
+    private lateinit var siZhuText: TextView
     private lateinit var locationText: TextView
 
     private lateinit var sensorManager: SensorManager
@@ -183,6 +187,27 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀", "南方朱雀"
     )
 
+    // 九星
+    private val jiuXing = arrayOf(
+        "贪狼", "巨门", "禄存", "文曲", "廉贞", "武曲", "破军", "左辅", "右弼"
+    )
+
+    // 九星五行属性
+    private val jiuXingWuXing = arrayOf(
+        "木", "土", "土", "水", "火", "金", "金", "土", "金"
+    )
+
+    // 九星吉凶
+    private val jiuXingJiXiong = arrayOf(
+        "吉", "凶", "凶", "凶", "凶", "吉", "凶", "吉", "吉"
+    )
+
+    // 天干
+    private val tianGan = arrayOf("甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸")
+
+    // 地支
+    private val diZhi = arrayOf("子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥")
+
     // 方位名称
     private val directions = arrayOf("北", "北偏东", "东北", "东偏北", "东", "东偏南", "东南", "南偏东",
         "南", "南偏西", "西南", "西偏南", "西", "西偏北", "西北", "北偏西")
@@ -208,6 +233,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         changShengStatusText = findViewById(R.id.changShengStatusText)
         xiu28Text = findViewById(R.id.xiu28Text)
         xiu28XiangText = findViewById(R.id.xiu28XiangText)
+        jiuXingText = findViewById(R.id.jiuXingText)
+        jiuXingWuXingText = findViewById(R.id.jiuXingWuXingText)
+        siZhuText = findViewById(R.id.siZhuText)
         locationText = findViewById(R.id.locationText)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -400,5 +428,62 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         xiu28XiangText.text = xiu28Xiang[xiuIndex]
         xiu28Text.setTextColor(android.graphics.Color.parseColor("#98FB98"))
         xiu28XiangText.setTextColor(android.graphics.Color.parseColor("#98FB98"))
+
+        // 九星 (每星40度)
+        val jiuXingIndex = (degree / 40f).toInt() % 9
+        val jiuXingName = jiuXing[jiuXingIndex]
+        val jiuXingWX = jiuXingWuXing[jiuXingIndex]
+        val jiuXingJX = jiuXingJiXiong[jiuXingIndex]
+        jiuXingText.text = "九星: $jiuXingName ($jiuXingWX)"
+        jiuXingWuXingText.text = jiuXingJX
+        if (jiuXingJX == "吉") {
+            jiuXingText.setTextColor(android.graphics.Color.parseColor("#FFD700"))
+            jiuXingWuXingText.setTextColor(android.graphics.Color.parseColor("#FFD700"))
+        } else {
+            jiuXingText.setTextColor(android.graphics.Color.parseColor("#8B4513"))
+            jiuXingWuXingText.setTextColor(android.graphics.Color.parseColor("#8B4513"))
+        }
+
+        // 四柱干支
+        val siZhu = calculateSiZhu()
+        siZhuText.text = "四柱: $siZhu"
+        siZhuText.setTextColor(android.graphics.Color.parseColor("#DDA0DD"))
+    }
+
+    /**
+     * 计算当前四柱干支（简化算法）
+     * 使用近似的干支计算
+     */
+    private fun calculateSiZhu(): String {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        // 年柱（以1984年为甲子年）
+        val yearGanIndex = (year - 1984) % 10
+        val yearZhiIndex = (year - 1984) % 12
+        val yearZhu = tianGan[if (yearGanIndex >= 0) yearGanIndex else yearGanIndex + 10] +
+                diZhi[if (yearZhiIndex >= 0) yearZhiIndex else yearZhiIndex + 12]
+
+        // 月柱（简化：正月为寅）
+        val monthGanIndex = ((year - 1984) % 10 * 2 + month + 1) % 10
+        val monthZhu = tianGan[monthGanIndex] + diZhi[(month + 1) % 12]
+
+        // 日柱（简化公式）
+        val baseDate = java.util.GregorianCalendar(1900, 0, 31).timeInMillis
+        val currentDate = calendar.timeInMillis
+        val diffDays = ((currentDate - baseDate) / (1000 * 60 * 60 * 24)).toInt()
+        val dayGanIndex = diffDays % 10
+        val dayZhiIndex = diffDays % 12
+        val dayZhu = tianGan[dayGanIndex] + diZhi[dayZhiIndex]
+
+        // 时柱
+        val shiZhiIndex = ((hour + 1) / 2) % 12
+        val shiGanIndex = (dayGanIndex * 2 + shiZhiIndex) % 10
+        val shiZhu = tianGan[shiGanIndex] + diZhi[shiZhiIndex]
+
+        return "$yearZhu年 $monthZhu月 $dayZhu日 $shiZhu时"
     }
 }

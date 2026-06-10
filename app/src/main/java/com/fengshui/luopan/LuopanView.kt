@@ -163,6 +163,22 @@ class LuopanView @JvmOverloads constructor(
         33.0f, 3.0f, 15.0f, 7.0f, 18.0f, 18.0f, 17.0f
     )
 
+    // 九星（贪狼、巨门、禄存、文曲、廉贞、武曲、破军、左辅、右弼）
+    // 按洛书九宫顺序排列，每星40度（360/9）
+    private val jiuXing = arrayOf(
+        "贪狼", "巨门", "禄存", "文曲", "廉贞", "武曲", "破军", "左辅", "右弼"
+    )
+
+    // 九星五行属性
+    private val jiuXingWuXing = arrayOf(
+        "木", "土", "土", "水", "火", "金", "金", "土", "金"
+    )
+
+    // 九星吉凶
+    private val jiuXingJiXiong = arrayOf(
+        "吉", "凶", "凶", "凶", "凶", "吉", "凶", "吉", "吉"
+    )
+
     // 一百二十分金吉凶判断
     private fun isFenJinGood(index: Int): Boolean {
         val posInShan = index % 5
@@ -274,6 +290,9 @@ class LuopanView @JvmOverloads constructor(
 
         // 绘制二十八宿
         draw28Xiu(canvas, radius * 0.08f, radius * 0.04f)
+
+        // 绘制九星
+        drawJiuXing(canvas, radius * 0.035f, radius * 0.01f)
 
         // 绘制天池 (中心)
         drawTianChi(canvas)
@@ -677,6 +696,56 @@ class LuopanView @JvmOverloads constructor(
             canvas.restore()
 
             currentAngle += step
+        }
+
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#FFD700")
+        canvas.drawCircle(0f, 0f, outerR, paint)
+        canvas.drawCircle(0f, 0f, innerR, paint)
+    }
+
+    /**
+     * 绘制九星
+     * 每星40度，共9星
+     */
+    private fun drawJiuXing(canvas: Canvas, outerR: Float, innerR: Float) {
+        val step = 360f / 9f  // 每星40度
+
+        for (i in 0 until 9) {
+            val startAngle = i * step - currentDegree - step / 2
+
+            paint.strokeWidth = 1f
+            paint.color = Color.parseColor("#B8860B")
+            val rad = Math.toRadians(startAngle.toDouble())
+            canvas.drawLine(
+                (innerR * cos(rad)).toFloat(), (innerR * sin(rad)).toFloat(),
+                (outerR * cos(rad)).toFloat(), (outerR * sin(rad)).toFloat(), paint
+            )
+
+            val midAngle = Math.toRadians((startAngle + step / 2).toDouble())
+            val textR = (outerR + innerR) / 2f
+            val x = (textR * cos(midAngle)).toFloat()
+            val y = (textR * sin(midAngle)).toFloat()
+
+            textPaint.textAlign = Paint.Align.CENTER
+            textPaint.textSize = (outerR - innerR) * 0.4f
+
+            // 根据吉凶显示颜色
+            if (jiuXingJiXiong[i] == "吉") {
+                textPaint.color = Color.parseColor("#FFD700")  // 吉 - 金色
+                textPaint.typeface = Typeface.DEFAULT_BOLD
+            } else {
+                textPaint.color = Color.parseColor("#8B4513")  // 凶 - 深棕
+                textPaint.typeface = Typeface.DEFAULT
+            }
+
+            canvas.save()
+            canvas.translate(x, y)
+            canvas.rotate((startAngle + step / 2 + 90).toFloat())
+            // 显示九星名称（简化显示）
+            val displayText = jiuXing[i].substring(0, minOf(2, jiuXing[i].length))
+            canvas.drawText(displayText, 0f, 0f, textPaint)
+            canvas.restore()
         }
 
         paint.strokeWidth = 2f

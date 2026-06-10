@@ -291,6 +291,52 @@
 
     </LinearLayout>
 
+    <!-- 九星 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500">
+
+        <TextView
+            android:id="@+id/jiuXingText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="九星: 贪狼 (木)"
+            android:textColor="#FFD700"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:id="@+id/jiuXingWuXingText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="吉"
+            android:textColor="#FFD700"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+
+    <!-- 四柱干支 -->
+    <TextView
+        android:id="@+id/siZhuText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="四柱: 甲子年 丙寅月 戊辰日 庚午时"
+        android:textColor="#DDA0DD"
+        android:textSize="10sp"
+        android:gravity="center"
+        android:padding="3dp"
+        android:background="#2A1500"
+        android:fontFamily="monospace" />
+
     <TextView
         android:id="@+id/locationText"
         android:layout_width="match_parent"
